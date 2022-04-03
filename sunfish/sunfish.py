@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+from json import load
 import re, sys, time
 from itertools import count
 from collections import namedtuple
+import pygame
+
 
 ###############################################################################
 # Piece-Square tables. Tune these to change sunfish's behaviour
@@ -13,7 +16,7 @@ from collections import namedtuple
 piece = { 'P': 100, 'N': 280, 'B': 320, 'R': 479, 'Q': 929, 'K': 60000 }
 pst = {
     'P': (   0,   0,   0,   0,   0,   0,   0,   0,
-            78,  83,  86,  73, 102,  82,  85,  90,
+            78,  83,  86,  73, 102,  82,  119,  90,
              7,  29,  21,  44,  40,  31,  44,   7,
            -17,  16,  -2,  15,  14,   0,  15, -13,
            -26,   3,  10,   9,   6,   1,   0, -23,
@@ -373,7 +376,6 @@ class Searcher:
             # transposition table.
             yield depth, self.tp_move.get(pos), self.tp_score.get((pos, depth, True)).lower
 
-
 ###############################################################################
 # User interface
 ###############################################################################
@@ -401,50 +403,123 @@ def print_pos(pos):
         print(' ', 8-i, ' '.join(uni_pieces.get(p, p) for p in row))
     print('    a b c d e f g h \n\n')
 
+WHITE_KING = pygame.image.load('Assets/White_King.png')
+BLACK_KING = pygame.image.load('Assets/Black_King.png')
+WHITE_QUEEN = pygame.image.load('Assets/White_Queen.png')
+BLACK_QUEEN = pygame.image.load('Assets/Black_Queen.png')
+WHITE_ROOK = pygame.image.load('Assets/White_Rook.png')
+BLACK_ROOK = pygame.image.load('Assets/Black_Rook.png')
+WHITE_KNIGHT = pygame.image.load('Assets/White_Knight.png')
+BLACK_KNIGHT = pygame.image.load('Assets/Black_Knight.png')
+WHITE_BISHOP = pygame.image.load('Assets/White_Bishop.png')
+BLACK_BISHOP = pygame.image.load('Assets/Black_Bishop.png')
+WHITE_PAWN = pygame.image.load('Assets/White_Pawn.png')
+BLACK_PAWN = pygame.image.load('Assets/Black_Pawn.png')
+WHITE_POLE = pygame.image.load('Assets/White_Pole.png')
+BLACK_POLE = pygame.image.load('Assets/Black_Pole.png')
+EMPTY_POLE = pygame.image.load('Assets/Empty_Pole.png')
+BACK = (135,206,235)
+
+WIDTH, HEIGHT = 10 * EMPTY_POLE.get_width(), 10 * EMPTY_POLE.get_height()
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Blindfold Chess")
+FPS = 60
+
+
+def draw_board(): 
+    board = ['b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
+             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
+             'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
+             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
+             'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
+             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
+             'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
+             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
+            ]
+    pos_x = 100
+    pos_y = 100
+    row = 1
+    for i in board:
+        if i == 'b': pole = BLACK_POLE
+        if i == 'w': pole = WHITE_POLE
+        WIN.blit(pole, (pos_x, pos_y))
+        pos_x += 100
+        if row%8 == 0:
+            pos_y += 100
+            pos_x = 100
+        row += 1
+        
+def draw_pieces(pos):
+    
+    WIN.fill(BACK)
+    draw_board()
+    uni_pieces = {'R':WHITE_ROOK, 'N':WHITE_KNIGHT, 'B':WHITE_BISHOP, 'Q':WHITE_QUEEN, 'K':WHITE_KING, 'P':WHITE_PAWN,
+                  'r':BLACK_ROOK, 'n':BLACK_KNIGHT, 'b':BLACK_BISHOP, 'q':BLACK_QUEEN, 'k':BLACK_KING, 'p':BLACK_PAWN, '.':EMPTY_POLE}
+    pos_x = 100
+    pos_y =100
+    for i, row in enumerate(pos.board.split()):
+        for p in row:
+            piece = uni_pieces.get(p, p)
+            piece.get_rect(center=(EMPTY_POLE.get_width()/2, EMPTY_POLE.get_height()/2))
+            WIN.blit(piece, (pos_x, pos_y))
+            pos_x += 100
+        pos_x = 100
+        pos_y += 100
+    pygame.display.update()
 
 def main():
-    hist = [Position(initial, 0, (True,True), (True,True), 0, 0)]
-    searcher = Searcher()
-    while True:
-        print_pos(hist[-1])
-
-        if hist[-1].score <= -MATE_LOWER:
-            print("You lost")
-            break
-
-        # We query the user until she enters a (pseudo) legal move.
-        move = None
-        while move not in hist[-1].gen_moves():
-            match = re.match('([a-h][1-8])'*2, input('Your move: '))
-            if match:
-                move = parse(match.group(1)), parse(match.group(2))
-            else:
-                # Inform the user when invalid input (e.g. "help") is entered
-                print("Please enter a move like g8f6")
-        hist.append(hist[-1].move(move))
-
-        # After our move we rotate the board and print it again.
-        # This allows us to see the effect of our move.
-        print_pos(hist[-1].rotate())
-
-        if hist[-1].score <= -MATE_LOWER:
-            print("You won")
-            break
-
-        # Fire up the engine to look for a move.
-        start = time.time()
-        for _depth, move, score in searcher.search(hist[-1], hist):
-            if time.time() - start > 1:
+    clock = pygame.time.Clock()
+    run = True
+    while run:
+        clock.tick(FPS) 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+        
+        hist = [Position(initial, 0, (True,True), (True,True), 0, 0)]
+        searcher = Searcher()
+        while True:
+            print_pos(hist[-1])
+            draw_pieces(hist[-1])
+            if hist[-1].score <= -MATE_LOWER:
+                print("You lost")
                 break
 
-        if score == MATE_UPPER:
-            print("Checkmate!")
+            # We query the user until she enters a (pseudo) legal move.
+            move = None
+            while move not in hist[-1].gen_moves():
+                match = re.match('([a-h][1-8])'*2, input('Your move: '))
+                if match:
+                    move = parse(match.group(1)), parse(match.group(2))
+                else:
+                    # Inform the user when invalid input (e.g. "help") is entered
+                    print("Please enter a move like g8f6")
+            hist.append(hist[-1].move(move))
 
-        # The black player moves from a rotated position, so we have to
-        # 'back rotate' the move before printing it.
-        print("My move:", render(119-move[0]) + render(119-move[1]))
-        hist.append(hist[-1].move(move))
+            # After our move we rotate the board and print it again.
+            # This allows us to see the effect of our move.
+            print_pos(hist[-1].rotate())
+            draw_pieces(hist[-1].rotate())
 
+            if hist[-1].score <= -MATE_LOWER:
+                print("You won")
+                break
+
+            # Fire up the engine to look for a move.
+            start = time.time()
+            for _depth, move, score in searcher.search(hist[-1], hist):
+                if time.time() - start > 1:
+                    break
+
+            if score == MATE_UPPER:
+                print("Checkmate!")
+
+            # The black player moves from a rotated position, so we have to
+            # 'back rotate' the move before printing it.
+            print("My move:", render(119-move[0]) + render(119-move[1]))
+            hist.append(hist[-1].move(move))
+    pygame.quit()
+    
 
 if __name__ == '__main__':
     main()
