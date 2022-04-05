@@ -1,12 +1,11 @@
 #!/usr/bin/env pypy
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
 import re, sys, time
 from itertools import count
 from collections import namedtuple
 import pygame
-import os
+import pygame_textinput
 
 
 ###############################################################################
@@ -416,37 +415,37 @@ BLACK_BISHOP = pygame.image.load('Assets/Pieces/Black_Bishop.png')
 WHITE_PAWN = pygame.image.load('Assets/Pieces/White_Pawn.png')
 BLACK_PAWN = pygame.image.load('Assets/Pieces/Black_Pawn.png')
 
-# COLOR_POLE = []
+# COLOR_FIELD = []
 # for file in enumerate(os.listdir('Assets/Board/Other')):
 #     if file.endswith('.png'):
-#         COLOR_POLE = pygame.image.load('Assets/Board/Other/{}'.format(os.path.basename(file)))
-WHITE_POLE = pygame.image.load('Assets/Board/White_Pole.png')
-BLACK_POLE = pygame.image.load('Assets/Board/Black_Pole.png')
-SELECTED_POLE = pygame.image.load('Assets/Board/Selected_Pole.png')
-EMPTY_POLE = pygame.image.load('Assets/Board/Empty_Pole.png')
-FRAME_POLE = pygame.image.load('Assets/Board/Board_Pole.png')
-POLE_1 = pygame.image.load('Assets/Board/1.png')
-POLE_2 = pygame.image.load('Assets/Board/2.png')
-POLE_3 = pygame.image.load('Assets/Board/3.png')
-POLE_4 = pygame.image.load('Assets/Board/4.png')
-POLE_5 = pygame.image.load('Assets/Board/5.png')
-POLE_6 = pygame.image.load('Assets/Board/6.png')
-POLE_7 = pygame.image.load('Assets/Board/7.png')
-POLE_8 = pygame.image.load('Assets/Board/8.png')
-POLE_A = pygame.image.load('Assets/Board/A.png')
-POLE_B = pygame.image.load('Assets/Board/B.png')
-POLE_C = pygame.image.load('Assets/Board/C.png')
-POLE_D = pygame.image.load('Assets/Board/D.png')
-POLE_E = pygame.image.load('Assets/Board/E.png')
-POLE_F = pygame.image.load('Assets/Board/F.png')
-POLE_G = pygame.image.load('Assets/Board/G.png')
-POLE_H = pygame.image.load('Assets/Board/H.png')
-# POLE = []
+#         COLOR_FIELD = pygame.image.load('Assets/Board/Other/{}'.format(os.path.basename(file)))
+WHITE_FIELD = pygame.image.load('Assets/Board/White_Pole.png')
+BLACK_FIELD = pygame.image.load('Assets/Board/Black_Pole.png')
+SELECTED_FIELD = pygame.image.load('Assets/Board/Selected_Pole.png')
+EMPTY_FIELD = pygame.image.load('Assets/Board/Empty_Pole.png')
+FRAME_FIELD = pygame.image.load('Assets/Board/Board_Pole.png')
+FIELD_1 = pygame.image.load('Assets/Board/1.png')
+FIELD_2 = pygame.image.load('Assets/Board/2.png')
+FIELD_3 = pygame.image.load('Assets/Board/3.png')
+FIELD_4 = pygame.image.load('Assets/Board/4.png')
+FIELD_5 = pygame.image.load('Assets/Board/5.png')
+FIELD_6 = pygame.image.load('Assets/Board/6.png')
+FIELD_7 = pygame.image.load('Assets/Board/7.png')
+FIELD_8 = pygame.image.load('Assets/Board/8.png')
+FIELD_A = pygame.image.load('Assets/Board/A.png')
+FIELD_B = pygame.image.load('Assets/Board/B.png')
+FIELD_C = pygame.image.load('Assets/Board/C.png')
+FIELD_D = pygame.image.load('Assets/Board/D.png')
+FIELD_E = pygame.image.load('Assets/Board/E.png')
+FIELD_F = pygame.image.load('Assets/Board/F.png')
+FIELD_G = pygame.image.load('Assets/Board/G.png')
+FIELD_H = pygame.image.load('Assets/Board/H.png')
+# FIELD = []
 # for file in os.listdir('Assets/Board'):
 #     # if file.endswith('.png'):
-#     POLE[file] = pygame.image.load('Assets/Board/{}'.format(os.path.basename(file)))
+#     FIELD[file] = pygame.image.load('Assets/Board/{}'.format(os.path.basename(file)))
 BACK = (0, 0, 0)
-WIDTH, HEIGHT = 12 * EMPTY_POLE.get_width(), 10 * EMPTY_POLE.get_height()
+WIDTH, HEIGHT = 15 * EMPTY_FIELD.get_width(), 10 * EMPTY_FIELD.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
@@ -469,25 +468,25 @@ def draw_board():
     pos_y = 0
     row = 1
     for i in board:
-        if i == 'FP': pole = FRAME_POLE
-        if i == 'A': pole = POLE_A
-        if i == 'B': pole = POLE_B
-        if i == 'C': pole = POLE_C
-        if i == 'D': pole = POLE_D
-        if i == 'E': pole = POLE_E
-        if i == 'F': pole = POLE_F
-        if i == 'G': pole = POLE_G
-        if i == 'H': pole = POLE_H
-        if i == '1': pole = POLE_1
-        if i == '2': pole = POLE_2
-        if i == '3': pole = POLE_3
-        if i == '4': pole = POLE_4
-        if i == '5': pole = POLE_5
-        if i == '6': pole = POLE_6
-        if i == '7': pole = POLE_7
-        if i == '8': pole = POLE_8
-        if i == 'b': pole = BLACK_POLE
-        if i == 'w': pole = WHITE_POLE
+        if i == 'FP': pole = FRAME_FIELD
+        if i == 'A': pole = FIELD_A
+        if i == 'B': pole = FIELD_B
+        if i == 'C': pole = FIELD_C
+        if i == 'D': pole = FIELD_D
+        if i == 'E': pole = FIELD_E
+        if i == 'F': pole = FIELD_F
+        if i == 'G': pole = FIELD_G
+        if i == 'H': pole = FIELD_H
+        if i == '1': pole = FIELD_1
+        if i == '2': pole = FIELD_2
+        if i == '3': pole = FIELD_3
+        if i == '4': pole = FIELD_4
+        if i == '5': pole = FIELD_5
+        if i == '6': pole = FIELD_6
+        if i == '7': pole = FIELD_7
+        if i == '8': pole = FIELD_8
+        if i == 'b': pole = BLACK_FIELD
+        if i == 'w': pole = WHITE_FIELD
         WIN.blit(pole, (pos_x, pos_y))
         pos_x += 100
         if row%10 == 0:
@@ -498,30 +497,22 @@ def draw_board():
 def draw_pieces(pos):    
     draw_board()
     uni_pieces = {'R':WHITE_ROOK, 'N':WHITE_KNIGHT, 'B':WHITE_BISHOP, 'Q':WHITE_QUEEN, 'K':WHITE_KING, 'P':WHITE_PAWN,
-                  'r':BLACK_ROOK, 'n':BLACK_KNIGHT, 'b':BLACK_BISHOP, 'q':BLACK_QUEEN, 'k':BLACK_KING, 'p':BLACK_PAWN, '.':EMPTY_POLE}
+                  'r':BLACK_ROOK, 'n':BLACK_KNIGHT, 'b':BLACK_BISHOP, 'q':BLACK_QUEEN, 'k':BLACK_KING, 'p':BLACK_PAWN, '.':EMPTY_FIELD}
     pos_x = 100
     pos_y =100
     for i, row in enumerate(pos.board.split()):
         for p in row:
             piece = uni_pieces.get(p, p)
-            piece.get_rect(center=(EMPTY_POLE.get_width()/2, EMPTY_POLE.get_height()/2))
+            piece.get_rect(center=(EMPTY_FIELD.get_width()/2, EMPTY_FIELD.get_height()/2))
             WIN.blit(piece, (pos_x, pos_y))
             pos_x += 100
         pos_x = 100
         pos_y += 100
 
-
 def main():
     pygame.init()
     clock = pygame.time.Clock()
     run = True
-    
-    base_font = pygame.font.Font(None, 32)
-    user_text = ''
-    input_rect = pygame.Rect(1000, 0, 200, 200)
-    text_move = 'Your move: '
-
-
     hist = [Position(initial, 0, (True,True), (True,True), 0, 0)]
     searcher = Searcher()
 
@@ -530,46 +521,41 @@ def main():
         # pygame.event.pump()
         # pygame.event.wait()
         # pygame.event.poll()
-        clock.tick(FPS) 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                sys.exit()
+        clock.tick(FPS)
+        events = pygame.event.get()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                    user_text = user_text[:-1]
-                else: user_text += event.unicode
+        for event in events:
+            if event.type == pygame.QUIT:
+                exit()
 
         while True:
-            print_pos(hist[-1])
+            # print_pos(hist[-1])
             draw_pieces(hist[-1])            
             pygame.display.update()
-            pygame.event.wait()
+            pygame.event.poll()
             if hist[-1].score <= -MATE_LOWER:
                 print("You lost")
                 break
-
+            
             # We query the user until she enters a (pseudo) legal move.
             move = None
-            pygame.draw.rect(WIN, (0, 0, 0) , input_rect)
-            text_surface = base_font.render(text_move, True, (255, 255, 255))
-            WIN.blit(text_surface, (input_rect.x + 5, input_rect.y + 10))
-            input_rect.w = max(200, text_surface.get_width())
-            pygame.display.flip()
+
+            
             while move not in hist[-1].gen_moves():                
-                match = re.match('([a-h][1-8])'*2, text_move)
+                match = re.match('([a-h][1-8])'*2, input('Your move: '))
+                # print(match)
                 if match:
                     move = parse(match.group(1)), parse(match.group(2))
+                
                 else:
-                    # Inform the user when invalid input (e.g. "help") is entered
+                    #Inform the user when invalid input (e.g. "help") is entered
                     print("Please enter a move like g8f6")
             hist.append(hist[-1].move(move))
 
             # After our move we rotate the board and print it again.
             # This allows us to see the effect of our move.
-            pygame.event.wait()
-            print_pos(hist[-1].rotate())
+            pygame.event.poll()
+            # print_pos(hist[-1].rotate())
             draw_pieces(hist[-1].rotate())            
             pygame.display.update()
 
