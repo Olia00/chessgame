@@ -448,7 +448,7 @@ def draw_board():
             pos_y += 100
             pos_x = 100
         row += 1
-        
+
 def draw_pieces(pos):
     
     WIN.fill(BACK)
@@ -471,6 +471,10 @@ def main():
     clock = pygame.time.Clock()
     run = True
     while run:
+        # pygame.event.get()
+        # pygame.event.pump()
+        # pygame.event.wait()
+        # pygame.event.poll()
         clock.tick(FPS) 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
