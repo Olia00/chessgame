@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-from json import load
 import re, sys, time
 from itertools import count
 from collections import namedtuple
 import pygame
+import os
 
 
 ###############################################################################
@@ -403,55 +403,99 @@ def print_pos(pos):
         print(' ', 8-i, ' '.join(uni_pieces.get(p, p) for p in row))
     print('    a b c d e f g h \n\n')
 
-WHITE_KING = pygame.image.load('Assets/White_King.png')
-BLACK_KING = pygame.image.load('Assets/Black_King.png')
-WHITE_QUEEN = pygame.image.load('Assets/White_Queen.png')
-BLACK_QUEEN = pygame.image.load('Assets/Black_Queen.png')
-WHITE_ROOK = pygame.image.load('Assets/White_Rook.png')
-BLACK_ROOK = pygame.image.load('Assets/Black_Rook.png')
-WHITE_KNIGHT = pygame.image.load('Assets/White_Knight.png')
-BLACK_KNIGHT = pygame.image.load('Assets/Black_Knight.png')
-WHITE_BISHOP = pygame.image.load('Assets/White_Bishop.png')
-BLACK_BISHOP = pygame.image.load('Assets/Black_Bishop.png')
-WHITE_PAWN = pygame.image.load('Assets/White_Pawn.png')
-BLACK_PAWN = pygame.image.load('Assets/Black_Pawn.png')
-WHITE_POLE = pygame.image.load('Assets/White_Pole.png')
-BLACK_POLE = pygame.image.load('Assets/Black_Pole.png')
-EMPTY_POLE = pygame.image.load('Assets/Empty_Pole.png')
-BACK = (135,206,235)
+WHITE_KING = pygame.image.load('Assets/Pieces/White_King.png')
+BLACK_KING = pygame.image.load('Assets/Pieces/Black_King.png')
+WHITE_QUEEN = pygame.image.load('Assets/Pieces/White_Queen.png')
+BLACK_QUEEN = pygame.image.load('Assets/Pieces/Black_Queen.png')
+WHITE_ROOK = pygame.image.load('Assets/Pieces/White_Rook.png')
+BLACK_ROOK = pygame.image.load('Assets/Pieces/Black_Rook.png')
+WHITE_KNIGHT = pygame.image.load('Assets/Pieces/White_Knight.png')
+BLACK_KNIGHT = pygame.image.load('Assets/Pieces/Black_Knight.png')
+WHITE_BISHOP = pygame.image.load('Assets/Pieces/White_Bishop.png')
+BLACK_BISHOP = pygame.image.load('Assets/Pieces/Black_Bishop.png')
+WHITE_PAWN = pygame.image.load('Assets/Pieces/White_Pawn.png')
+BLACK_PAWN = pygame.image.load('Assets/Pieces/Black_Pawn.png')
 
-WIDTH, HEIGHT = 10 * EMPTY_POLE.get_width(), 10 * EMPTY_POLE.get_height()
+# COLOR_POLE = []
+# for file in enumerate(os.listdir('Assets/Board/Other')):
+#     if file.endswith('.png'):
+#         COLOR_POLE = pygame.image.load('Assets/Board/Other/{}'.format(os.path.basename(file)))
+WHITE_POLE = pygame.image.load('Assets/Board/White_Pole.png')
+BLACK_POLE = pygame.image.load('Assets/Board/Black_Pole.png')
+SELECTED_POLE = pygame.image.load('Assets/Board/Selected_Pole.png')
+EMPTY_POLE = pygame.image.load('Assets/Board/Empty_Pole.png')
+FRAME_POLE = pygame.image.load('Assets/Board/Board_Pole.png')
+POLE_1 = pygame.image.load('Assets/Board/1.png')
+POLE_2 = pygame.image.load('Assets/Board/2.png')
+POLE_3 = pygame.image.load('Assets/Board/3.png')
+POLE_4 = pygame.image.load('Assets/Board/4.png')
+POLE_5 = pygame.image.load('Assets/Board/5.png')
+POLE_6 = pygame.image.load('Assets/Board/6.png')
+POLE_7 = pygame.image.load('Assets/Board/7.png')
+POLE_8 = pygame.image.load('Assets/Board/8.png')
+POLE_A = pygame.image.load('Assets/Board/A.png')
+POLE_B = pygame.image.load('Assets/Board/B.png')
+POLE_C = pygame.image.load('Assets/Board/C.png')
+POLE_D = pygame.image.load('Assets/Board/D.png')
+POLE_E = pygame.image.load('Assets/Board/E.png')
+POLE_F = pygame.image.load('Assets/Board/F.png')
+POLE_G = pygame.image.load('Assets/Board/G.png')
+POLE_H = pygame.image.load('Assets/Board/H.png')
+# POLE = []
+# for file in os.listdir('Assets/Board'):
+#     # if file.endswith('.png'):
+#     POLE[file] = pygame.image.load('Assets/Board/{}'.format(os.path.basename(file)))
+BACK = (0, 0, 0)
+WIDTH, HEIGHT = 12 * EMPTY_POLE.get_width(), 10 * EMPTY_POLE.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
 
-
-def draw_board(): 
-    board = ['b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
-             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
-             'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
-             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
-             'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
-             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
-             'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w',
-             'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b',
+def draw_board():     
+    WIN.fill(BACK)
+    board = ['FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP', 
+             '8',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '8',
+             '7',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '7',
+             '6',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '6',
+             '5',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '5',
+             '4',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '4',
+             '3',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '3',
+             '2',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '2',
+             '1',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '1',
+             'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'
             ]
-    pos_x = 100
-    pos_y = 100
+
+    pos_x = 0
+    pos_y = 0
     row = 1
     for i in board:
+        if i == 'FP': pole = FRAME_POLE
+        if i == 'A': pole = POLE_A
+        if i == 'B': pole = POLE_B
+        if i == 'C': pole = POLE_C
+        if i == 'D': pole = POLE_D
+        if i == 'E': pole = POLE_E
+        if i == 'F': pole = POLE_F
+        if i == 'G': pole = POLE_G
+        if i == 'H': pole = POLE_H
+        if i == '1': pole = POLE_1
+        if i == '2': pole = POLE_2
+        if i == '3': pole = POLE_3
+        if i == '4': pole = POLE_4
+        if i == '5': pole = POLE_5
+        if i == '6': pole = POLE_6
+        if i == '7': pole = POLE_7
+        if i == '8': pole = POLE_8
         if i == 'b': pole = BLACK_POLE
         if i == 'w': pole = WHITE_POLE
         WIN.blit(pole, (pos_x, pos_y))
         pos_x += 100
-        if row%8 == 0:
+        if row%10 == 0:
             pos_y += 100
-            pos_x = 100
+            pos_x = 0
         row += 1
 
-def draw_pieces(pos):
-    
-    WIN.fill(BACK)
+def draw_pieces(pos):    
     draw_board()
     uni_pieces = {'R':WHITE_ROOK, 'N':WHITE_KNIGHT, 'B':WHITE_BISHOP, 'Q':WHITE_QUEEN, 'K':WHITE_KING, 'P':WHITE_PAWN,
                   'r':BLACK_ROOK, 'n':BLACK_KNIGHT, 'b':BLACK_BISHOP, 'q':BLACK_QUEEN, 'k':BLACK_KING, 'p':BLACK_PAWN, '.':EMPTY_POLE}
@@ -465,11 +509,22 @@ def draw_pieces(pos):
             pos_x += 100
         pos_x = 100
         pos_y += 100
-    pygame.display.update()
+
 
 def main():
+    pygame.init()
     clock = pygame.time.Clock()
     run = True
+    
+    base_font = pygame.font.Font(None, 32)
+    user_text = ''
+    input_rect = pygame.Rect(1000, 0, 200, 200)
+    text_move = 'Your move: '
+
+
+    hist = [Position(initial, 0, (True,True), (True,True), 0, 0)]
+    searcher = Searcher()
+
     while run:
         # pygame.event.get()
         # pygame.event.pump()
@@ -479,20 +534,31 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-        
-        hist = [Position(initial, 0, (True,True), (True,True), 0, 0)]
-        searcher = Searcher()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    user_text = user_text[:-1]
+                else: user_text += event.unicode
+
         while True:
             print_pos(hist[-1])
-            draw_pieces(hist[-1])
+            draw_pieces(hist[-1])            
+            pygame.display.update()
+            pygame.event.wait()
             if hist[-1].score <= -MATE_LOWER:
                 print("You lost")
                 break
 
             # We query the user until she enters a (pseudo) legal move.
             move = None
-            while move not in hist[-1].gen_moves():
-                match = re.match('([a-h][1-8])'*2, input('Your move: '))
+            pygame.draw.rect(WIN, (0, 0, 0) , input_rect)
+            text_surface = base_font.render(text_move, True, (255, 255, 255))
+            WIN.blit(text_surface, (input_rect.x + 5, input_rect.y + 10))
+            input_rect.w = max(200, text_surface.get_width())
+            pygame.display.flip()
+            while move not in hist[-1].gen_moves():                
+                match = re.match('([a-h][1-8])'*2, text_move)
                 if match:
                     move = parse(match.group(1)), parse(match.group(2))
                 else:
@@ -502,8 +568,10 @@ def main():
 
             # After our move we rotate the board and print it again.
             # This allows us to see the effect of our move.
+            pygame.event.wait()
             print_pos(hist[-1].rotate())
-            draw_pieces(hist[-1].rotate())
+            draw_pieces(hist[-1].rotate())            
+            pygame.display.update()
 
             if hist[-1].score <= -MATE_LOWER:
                 print("You won")
@@ -520,6 +588,7 @@ def main():
 
             # The black player moves from a rotated position, so we have to
             # 'back rotate' the move before printing it.
+            
             print("My move:", render(119-move[0]) + render(119-move[1]))
             hist.append(hist[-1].move(move))
     pygame.quit()
@@ -527,4 +596,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
