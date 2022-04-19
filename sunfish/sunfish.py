@@ -4,8 +4,9 @@
 import re, sys, time
 from itertools import count
 from collections import namedtuple
+from turtle import screensize
 import pygame
-import pygame_textinput
+import pyautogui
 
 
 ###############################################################################
@@ -402,50 +403,120 @@ def print_pos(pos):
         print(' ', 8-i, ' '.join(uni_pieces.get(p, p) for p in row))
     print('    a b c d e f g h \n\n')
 
-WHITE_KING = pygame.image.load('Assets/Pieces/White_King.png')
-BLACK_KING = pygame.image.load('Assets/Pieces/Black_King.png')
-WHITE_QUEEN = pygame.image.load('Assets/Pieces/White_Queen.png')
-BLACK_QUEEN = pygame.image.load('Assets/Pieces/Black_Queen.png')
-WHITE_ROOK = pygame.image.load('Assets/Pieces/White_Rook.png')
-BLACK_ROOK = pygame.image.load('Assets/Pieces/Black_Rook.png')
-WHITE_KNIGHT = pygame.image.load('Assets/Pieces/White_Knight.png')
-BLACK_KNIGHT = pygame.image.load('Assets/Pieces/Black_Knight.png')
-WHITE_BISHOP = pygame.image.load('Assets/Pieces/White_Bishop.png')
-BLACK_BISHOP = pygame.image.load('Assets/Pieces/Black_Bishop.png')
-WHITE_PAWN = pygame.image.load('Assets/Pieces/White_Pawn.png')
-BLACK_PAWN = pygame.image.load('Assets/Pieces/Black_Pawn.png')
+# def chane_scale(asset, height):
+#     asset = pygame.transform.scale(asset, (50, 50))
 
-# COLOR_FIELD = []
-# for file in enumerate(os.listdir('Assets/Board/Other')):
-#     if file.endswith('.png'):
-#         COLOR_FIELD = pygame.image.load('Assets/Board/Other/{}'.format(os.path.basename(file)))
-WHITE_FIELD = pygame.image.load('Assets/Board/White_Pole.png')
-BLACK_FIELD = pygame.image.load('Assets/Board/Black_Pole.png')
-SELECTED_FIELD = pygame.image.load('Assets/Board/Selected_Pole.png')
-EMPTY_FIELD = pygame.image.load('Assets/Board/Empty_Pole.png')
-FRAME_FIELD = pygame.image.load('Assets/Board/Board_Pole.png')
-FIELD_1 = pygame.image.load('Assets/Board/1.png')
-FIELD_2 = pygame.image.load('Assets/Board/2.png')
-FIELD_3 = pygame.image.load('Assets/Board/3.png')
-FIELD_4 = pygame.image.load('Assets/Board/4.png')
-FIELD_5 = pygame.image.load('Assets/Board/5.png')
-FIELD_6 = pygame.image.load('Assets/Board/6.png')
-FIELD_7 = pygame.image.load('Assets/Board/7.png')
-FIELD_8 = pygame.image.load('Assets/Board/8.png')
-FIELD_A = pygame.image.load('Assets/Board/A.png')
-FIELD_B = pygame.image.load('Assets/Board/B.png')
-FIELD_C = pygame.image.load('Assets/Board/C.png')
-FIELD_D = pygame.image.load('Assets/Board/D.png')
-FIELD_E = pygame.image.load('Assets/Board/E.png')
-FIELD_F = pygame.image.load('Assets/Board/F.png')
-FIELD_G = pygame.image.load('Assets/Board/G.png')
-FIELD_H = pygame.image.load('Assets/Board/H.png')
-# FIELD = []
+width, height = pyautogui.size()
+scale = (height/10-10, height/10-10)
+white_king = pygame.image.load('Assets/Pieces/White_King.png')
+white_king = pygame.transform.scale(white_king, scale)
+black_king = pygame.image.load('Assets/Pieces/Black_King.png')
+black_king = pygame.transform.scale(black_king, scale)
+
+white_queen = pygame.image.load('Assets/Pieces/White_Queen.png')
+white_queen = pygame.transform.scale(white_queen, scale)
+black_queen = pygame.image.load('Assets/Pieces/Black_Queen.png')
+black_queen = pygame.transform.scale(black_queen, scale)
+
+white_rook = pygame.image.load('Assets/Pieces/White_Rook.png')
+white_rook = pygame.transform.scale(white_rook, scale)
+black_rook = pygame.image.load('Assets/Pieces/Black_Rook.png')
+black_rook = pygame.transform.scale(black_rook, scale)
+
+white_knight = pygame.image.load('Assets/Pieces/White_Knight.png')
+white_knight = pygame.transform.scale(white_knight, scale)
+black_knight = pygame.image.load('Assets/Pieces/Black_Knight.png')
+black_knight = pygame.transform.scale(black_knight, scale)
+
+white_bishop = pygame.image.load('Assets/Pieces/White_Bishop.png')
+white_bishop = pygame.transform.scale(white_bishop, scale)
+black_bishop = pygame.image.load('Assets/Pieces/Black_Bishop.png')
+black_bishop = pygame.transform.scale(black_bishop, scale)
+
+white_pawn = pygame.image.load('Assets/Pieces/White_Pawn.png')
+white_pawn = pygame.transform.scale(white_pawn, scale)
+black_pawn = pygame.image.load('Assets/Pieces/Black_Pawn.png')
+black_pawn = pygame.transform.scale(black_pawn, scale)
+
+white_field = pygame.image.load('Assets/Board/White_Pole.png')
+white_field = pygame.transform.scale(white_field, scale)
+black_field = pygame.image.load('Assets/Board/Black_Pole.png')
+black_field = pygame.transform.scale(black_field, scale)
+
+selected_field = pygame.image.load('Assets/Board/Selected_Pole.png')
+selected_field = pygame.transform.scale(selected_field, scale)
+
+empty_field = pygame.image.load('Assets/Board/Empty_Pole.png')
+empty_field = pygame.transform.scale(empty_field, scale)
+
+frame_field = pygame.image.load('Assets/Board/Board_Pole.png')
+frame_field = pygame.transform.scale(frame_field, scale)
+
+field_1 = pygame.image.load('Assets/Board/1.png')
+field_1 = pygame.transform.scale(field_1, scale)
+
+field_2 = pygame.image.load('Assets/Board/2.png')
+field_2 = pygame.transform.scale(field_2, scale)
+
+field_3 = pygame.image.load('Assets/Board/3.png')
+field_3 = pygame.transform.scale(field_3, scale)
+
+field_4 = pygame.image.load('Assets/Board/4.png')
+field_4 = pygame.transform.scale(field_4, scale)
+
+field_5 = pygame.image.load('Assets/Board/5.png')
+field_5 = pygame.transform.scale(field_5, scale)
+
+field_6 = pygame.image.load('Assets/Board/6.png')
+field_6 = pygame.transform.scale(field_6, scale)
+
+field_7 = pygame.image.load('Assets/Board/7.png')
+field_7 = pygame.transform.scale(field_7, scale)
+
+field_8 = pygame.image.load('Assets/Board/8.png')
+field_8 = pygame.transform.scale(field_8, scale)
+
+field_A = pygame.image.load('Assets/Board/A.png')
+field_A = pygame.transform.scale(field_A, scale)
+
+field_B = pygame.image.load('Assets/Board/B.png')
+field_B = pygame.transform.scale(field_B, scale)
+
+field_C = pygame.image.load('Assets/Board/C.png')
+field_C = pygame.transform.scale(field_C, scale)
+
+field_D = pygame.image.load('Assets/Board/D.png')
+field_D = pygame.transform.scale(field_D, scale)
+
+field_E = pygame.image.load('Assets/Board/E.png')
+field_E = pygame.transform.scale(field_E, scale)
+
+field_F = pygame.image.load('Assets/Board/F.png')
+field_F = pygame.transform.scale(field_F, scale)
+
+field_G = pygame.image.load('Assets/Board/G.png')
+field_G = pygame.transform.scale(field_G, scale)
+
+field_H = pygame.image.load('Assets/Board/H.png')
+field_H = pygame.transform.scale(field_H, scale)
+
+# assets = [ white_king, black_king, white_queen, black_queen, white_rook, black_rook, \
+#         white_knight, black_knight, white_bishop, black_bishop, white_pawn, black_pawn, \
+#         white_field, black_field, selected_field, empty_field, frame_field, field_1, field_2, \
+#         field_3, field_4, field_5, field_6, field_7, field_8, field_A, field_B, field_C, \
+#         field_D, field_E, field_F, field_G, field_H
+#         ]
+
+# print(width, height/10)
+# for file in assets:
+#     file = pygame.transform.scale(file, (height/10, height/10))
+#     chane_scale(file, height)
+# field = []
 # for file in os.listdir('Assets/Board'):
 #     # if file.endswith('.png'):
-#     FIELD[file] = pygame.image.load('Assets/Board/{}'.format(os.path.basename(file)))
+#     field[file] = pygame.image.load('Assets/Board/{}'.format(os.path.basename(file)))
 BACK = (0, 0, 0)
-WIDTH, HEIGHT = 15 * EMPTY_FIELD.get_width(), 10 * EMPTY_FIELD.get_height()
+WIDTH, HEIGHT = 10 * empty_field.get_width(), 10 * empty_field.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
@@ -468,46 +539,46 @@ def draw_board():
     pos_y = 0
     row = 1
     for i in board:
-        if i == 'FP': pole = FRAME_FIELD
-        if i == 'A': pole = FIELD_A
-        if i == 'B': pole = FIELD_B
-        if i == 'C': pole = FIELD_C
-        if i == 'D': pole = FIELD_D
-        if i == 'E': pole = FIELD_E
-        if i == 'F': pole = FIELD_F
-        if i == 'G': pole = FIELD_G
-        if i == 'H': pole = FIELD_H
-        if i == '1': pole = FIELD_1
-        if i == '2': pole = FIELD_2
-        if i == '3': pole = FIELD_3
-        if i == '4': pole = FIELD_4
-        if i == '5': pole = FIELD_5
-        if i == '6': pole = FIELD_6
-        if i == '7': pole = FIELD_7
-        if i == '8': pole = FIELD_8
-        if i == 'b': pole = BLACK_FIELD
-        if i == 'w': pole = WHITE_FIELD
+        if i == 'FP': pole = frame_field
+        if i == 'A': pole = field_A
+        if i == 'B': pole = field_B
+        if i == 'C': pole = field_C
+        if i == 'D': pole = field_D
+        if i == 'E': pole = field_E
+        if i == 'F': pole = field_F
+        if i == 'G': pole = field_G
+        if i == 'H': pole = field_H
+        if i == '1': pole = field_1
+        if i == '2': pole = field_2
+        if i == '3': pole = field_3
+        if i == '4': pole = field_4
+        if i == '5': pole = field_5
+        if i == '6': pole = field_6
+        if i == '7': pole = field_7
+        if i == '8': pole = field_8
+        if i == 'b': pole = black_field
+        if i == 'w': pole = white_field
         WIN.blit(pole, (pos_x, pos_y))
-        pos_x += 100
+        pos_x += empty_field.get_height()
         if row%10 == 0:
-            pos_y += 100
+            pos_y += empty_field.get_height()
             pos_x = 0
         row += 1
 
 def draw_pieces(pos):    
     draw_board()
-    uni_pieces = {'R':WHITE_ROOK, 'N':WHITE_KNIGHT, 'B':WHITE_BISHOP, 'Q':WHITE_QUEEN, 'K':WHITE_KING, 'P':WHITE_PAWN,
-                  'r':BLACK_ROOK, 'n':BLACK_KNIGHT, 'b':BLACK_BISHOP, 'q':BLACK_QUEEN, 'k':BLACK_KING, 'p':BLACK_PAWN, '.':EMPTY_FIELD}
-    pos_x = 100
-    pos_y =100
+    uni_pieces = {'R':white_rook, 'N':white_knight, 'B':white_bishop, 'Q':white_queen, 'K':white_king, 'P':white_pawn,
+                  'r':black_rook, 'n':black_knight, 'b':black_bishop, 'q':black_queen, 'k':black_king, 'p':black_pawn, '.':empty_field}
+    pos_x = empty_field.get_height()
+    pos_y =empty_field.get_height()
     for i, row in enumerate(pos.board.split()):
         for p in row:
             piece = uni_pieces.get(p, p)
-            piece.get_rect(center=(EMPTY_FIELD.get_width()/2, EMPTY_FIELD.get_height()/2))
+            piece.get_rect(center=(empty_field.get_width()/2, empty_field.get_height()/2))
             WIN.blit(piece, (pos_x, pos_y))
-            pos_x += 100
-        pos_x = 100
-        pos_y += 100
+            pos_x += empty_field.get_height()
+        pos_x = empty_field.get_height()
+        pos_y += empty_field.get_height()
 
 def main():
     pygame.init()
