@@ -15,25 +15,33 @@ def checkChar(txt):
 
     length = len(txt)
     ## Sprawdzanie wprowadzonego polecenia wg kryteriów
-    if length == 5:
-        if (txt[0] and txt[3] in field_name_letters) and (txt[1] and txt[4] in field_name_numbers):
-            sun_command = txt[0] + txt[1] + txt[3] + txt[4]
+    if length == 2:
+        if (txt[0] in field_name_letters) and (txt[1] in field_name_numbers):
+            sun_command = txt[0] + txt[1]
             print(sun_command)
-            return sun_command
+            return 0
         else:
-            print("Nie ma takich pól!")
+            print("Nie ma takiego pola!")
+            return 1
     else:
         print("Źle wprowadzona komenda")
+        return 2
 
 def toText():
     while True:
         with sr.Microphone() as source:
             try:
-                print("Podaj pozycję początkową i docelową")
+                print("Podaj pozycję początkową")
                 audio = r.listen(source)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
-                    return text
+                    check_val = checkChar(text)
+                    if check_val == 0:
+                        return text
+                    elif check_val == 1:
+                        print("Nie ma takiego pola!")
+                    elif check_val == 2:
+                        print("Źle wprowadzona komenda")
                 continue
             except:
                 print("Nie udało się wprowadzić polecenia")
