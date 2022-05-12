@@ -1,6 +1,10 @@
 import speech_recognition as sr
+from pynput import keyboard
+import pygame as game
 
 r = sr.Recognizer()
+r.dynamic_energy_threshold = False
+
 
 ##Funkcja pobierajaca dzwiek i zamieniajaca go na tekst
 
@@ -17,14 +21,10 @@ def checkChar(txt):
     ## Sprawdzanie wprowadzonego polecenia wg kryteriów
     if length == 2:
         if (txt[0] in field_name_letters) and (txt[1] in field_name_numbers):
-            sun_command = txt[0] + txt[1]
-            print(sun_command)
             return 0
         else:
-            print("Nie ma takiego pola!")
             return 1
     else:
-        print("Źle wprowadzona komenda")
         return 2
 
 def toText():
@@ -32,7 +32,7 @@ def toText():
         with sr.Microphone() as source:
             try:
                 print("Podaj pozycję początkową")
-                audio = r.listen(source)
+                audio = r.listen(source, timeout=7)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
@@ -40,8 +40,9 @@ def toText():
                         return text
                     elif check_val == 1:
                         print("Nie ma takiego pola!")
+                        if event
                     elif check_val == 2:
-                        print("Źle wprowadzona komenda")
+                        print("Źle wprowadzona komenda - za długa!")
                 continue
             except:
                 print("Nie udało się wprowadzić polecenia")
@@ -49,13 +50,8 @@ def toText():
 
 
 def get_input():
-    field_name_letters = ("A","a","B","b","C","c","D","d","E","e","F","f","G","g","H","h")
-    field_name_numbers = ("1","2","3","4","5","6","7","8")
     txt = toText()
-    if not txt == 0:
-        print(txt)
-    else:
-        print("Mowa niezrozumiała")
+
 
 if __name__ == "__main__":
     get_input()
