@@ -32,7 +32,7 @@ def toText():
         with sr.Microphone() as source:
             try:
                 print("Podaj pozycję początkową")
-                audio = r.listen(source, timeout=7)
+                audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
@@ -40,7 +40,8 @@ def toText():
                         return text
                     elif check_val == 1:
                         print("Nie ma takiego pola!")
-                        if event
+                        #if game.event.get(game.keyboard.push):
+                           #return(print("Wpisz pozycje na klawiaturze"))
                     elif check_val == 2:
                         print("Źle wprowadzona komenda - za długa!")
                 continue
