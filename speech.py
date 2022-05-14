@@ -1,6 +1,4 @@
 import speech_recognition as sr
-from pynput import keyboard
-import pygame
 
 # import game
 
@@ -38,7 +36,7 @@ def get_pos_1():
                     if check_val == 0:
                         # game.Game.select_field(text.lower())                    
                         print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
-                        # audio = r.listen(source, timeout=5)
+                        audio = r.listen(source, timeout=5)
                         confirm = r.recognize_google(audio, language='pl-PL') 
                         print(confirm)
                         if(confirm == 'Tak') or (confirm == 'TAK') or (confirm == 'tak'):
@@ -91,5 +89,4 @@ def get_pos_2():
 
 if __name__ == "__main__":
     get_pos_1()
-    print("dupa2")
     get_pos_2()
