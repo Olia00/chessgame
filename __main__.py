@@ -2,10 +2,10 @@ import pygame
 import re
 import time
 import pyautogui
-from collections import namedtuple
 
 from sunfish import sunfish
 from sunfish import compressed
+import speech
 
 width, height = pyautogui.size()
 scale = (height/10-10, height/10-10)
@@ -124,16 +124,16 @@ FPS = 60
 
 def draw_board():     
     WIN.fill(BACK)
-    board = ['FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP', 
-             '8',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '8',
-             '7',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '7',
-             '6',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '6',
-             '5',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '5',
-             '4',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '4',
-             '3',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '3',
-             '2',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '2',
-             '1',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '1',
-             'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'
+    board = ['FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP',       # 0-9
+             '8',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '8',        # 10-19
+             '7',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '7',        # 20-29
+             '6',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '6',        # 30-39
+             '5',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '5',        # 40-49
+             '4',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '4',        # 50-59
+             '3',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '3',        # 60-69
+             '2',   'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', '2',        # 70-79
+             '1',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '1',        # 80-89
+             'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'        # 90-99
             ]
 
     pos_x = 0
@@ -206,9 +206,8 @@ def main():
             
             # We query the user until she enters a (pseudo) legal move.
             move = None            
-            while move not in hist[-1].gen_moves():                
-                match = re.match('([a-h][1-8])'*2, input('Your move: '))
-                # print(match)
+            while move not in hist[-1].gen_moves():
+                match = re.match('([a-h][1-8])'*2, (str(speech.get_pos_1())+str(speech.get_pos_2())))
                 if match:
                     move = sunfish.parse(match.group(1)), sunfish.parse(match.group(2))
                 
