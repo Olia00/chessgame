@@ -1,16 +1,14 @@
 import speech_recognition as sr
 from pynput import keyboard
-import pygame as game
+import pygame
 
-import __main__
+# import game
 
 r = sr.Recognizer()
 r.dynamic_energy_threshold = False
 
 
 ##Funkcja pobierajaca dzwiek i zamieniajaca go na tekst
-
-
 def checkChar(txt):
     field_name_letters = ("A", "a", "B", "b", "C", "c", "D", "d", "E", "e", "F", "f", "G", "g", "H", "h")
     field_name_numbers = ("1", "2", "3", "4", "5", "6", "7", "8")
@@ -37,8 +35,18 @@ def get_pos_1():
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
-                    if check_val == 0:                       
-                        return str(text).lower()
+                    if check_val == 0:
+                        # game.Game.select_field(text.lower())                    
+                        print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
+                        # audio = r.listen(source, timeout=5)
+                        confirm = r.recognize_google(audio, language='pl-PL') 
+                        print(confirm)
+                        if(confirm == 'Tak') or (confirm == 'TAK') or (confirm == 'tak'):
+                            # game.Game.reset_board()
+                            return str(text).lower()
+                        elif(confirm == 'Nie') or (confirm == 'NIE') or (confirm == 'nie'): 
+                            print("Odrzucono wybraną pozycję")
+                            get_pos_1()
                     elif check_val == 1:
                         print("Nie ma takiego pola!")
                         #if game.event.get(game.keyboard.push):
@@ -61,7 +69,15 @@ def get_pos_2():
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
-                        return str(text).lower()
+                        print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
+                        audio = r.listen(source, timeout=5)
+                        confirm = r.recognize_google(audio, language='pl-PL') 
+                        print(confirm)
+                        if(confirm == 'Tak') or (confirm == 'TAK') or (confirm == 'tak'):
+                            return str(text).lower()
+                        if(confirm == 'Nie') or (confirm == 'NIE') or (confirm == 'nie'): 
+                            print("Odrzucono wybraną pozycję")
+                            get_pos_2()
                     elif check_val == 1:
                         print("Nie ma takiego pola!")
                         #if game.event.get(game.keyboard.push):
@@ -75,4 +91,5 @@ def get_pos_2():
 
 if __name__ == "__main__":
     get_pos_1()
+    print("dupa2")
     get_pos_2()
