@@ -17,9 +17,8 @@ def checkChar(txt):
     else:
         print("Mowa niezrozumiała")
 
-    length = len(txt)
     ## Sprawdzanie wprowadzonego polecenia wg kryteriów
-    if length == 2:
+    if len(txt) == 2:
         if (txt[0] in field_name_letters) and (txt[1] in field_name_numbers):
             return 0
         else:
