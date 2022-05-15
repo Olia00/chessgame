@@ -261,3 +261,7 @@ class Game:
                 print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
                 hist.append(hist[-1].move(move))
         pygame.quit()
+
+
+if __name__ == '__main__':
+    Game.main()
