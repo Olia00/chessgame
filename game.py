@@ -1,5 +1,7 @@
+from tabnanny import check
 from turtle import position
 import pygame
+import pygame_menu
 import re
 import time
 import pyautogui
@@ -108,6 +110,27 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
 
+def get_win_params():
+    return WIDTH, HEIGHT
+
+class Menu:
+    pygame.init()
+    # WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+
+
+    def start_game_single():
+        Game.main(1)
+    def start_game_multi():
+        Game.main(2)
+
+    def draw_menu():
+        print('test')
+        menu = pygame_menu.Menu('Blindfold chess', WIDTH, HEIGHT, 
+                                theme=pygame_menu.themes.THEME_BLUE)
+        menu.add.button('SINGLEPLAYER', Menu.start_game_single)
+        menu.add.button('MULTIPLAYER', Menu.start_game_multi)
+        menu.add.button('WYJDŹ', pygame_menu.events.EXIT)
+        menu.mainloop(WIN)
 
 class Game:
     board = [   'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP',       # 0-9
@@ -177,7 +200,7 @@ class Game:
             Game.board[82] = "s"
 
 
-        print(Game.board)
+        # print(Game.board)
         Game.draw_board() 
         Game.draw_pieces()     
         pygame.display.update()
@@ -198,9 +221,45 @@ class Game:
         Game.draw_pieces()     
         pygame.display.update()
 
+    def player_move(player, hist):
+        # We query the user until she enters a (pseudo) legal move.
+        move = None
+        print(f'Player{player} move')        
+        while move not in hist[-1].gen_moves():
+            match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1))+str(speech.get_pos(2))))
+            if match:
+                if player == 1:
+                    move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
+                elif player == 2:
+                    move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
+                # Game.reset_board()
+            else:
+                #Inform the user when invalid input (e.g. "help") is entered
+                print("Please enter a move like g8f6")
+        hist.append(hist[-1].move(move))
 
-    def main():
-        pygame.init()
+    def engine_move(searcher, hist):
+        print("Sunfish move: \n")
+        # Fire up the engine to look for a move.
+        start = time.time()
+        for _depth, move, score in searcher.search(hist[-1], hist):
+            if time.time() - start > 1:
+                break
+
+        if score == sunfish.MATE_UPPER:
+            print("Checkmate!")
+        # The black player moves from a rotated position, so we have to
+        # 'back rotate' the move before printing it.        
+        print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
+        hist.append(hist[-1].move(move))
+
+    def check_checkmate(hist, player):
+        if hist[-1].score <= -sunfish.MATE_LOWER:
+            print(f"Player{player} won")
+
+
+    def main(players):
+        
         clock = pygame.time.Clock()
         run = True
         hist = [sunfish.Position(sunfish.initial, 0, (True,True), (True,True), 0, 0)]
@@ -223,45 +282,32 @@ class Game:
                     print("You lost")
                     break
                 
-                # We query the user until she enters a (pseudo) legal move.
-                move = None            
-                while move not in hist[-1].gen_moves():
-                    match = re.match('([a-h][1-8])'*2, (str(speech.get_pos_1())+str(speech.get_pos_2())))
-                    if match:
-                        move = sunfish.parse(match.group(1)), sunfish.parse(match.group(2))
-                        # Game.reset_board()
-                    else:
-                        #Inform the user when invalid input (e.g. "help") is entered
-                        print("Please enter a move like g8f6")
-                hist.append(hist[-1].move(move))
+                if players == 1:
+                    Game.player_move(1, hist)
+                    Game.draw_pieces(hist[-1].rotate())            
+                    pygame.display.update()
+                    pygame.event.poll()
+                    Game.engine_move(searcher, hist)
 
-                # After our move we rotate the board and print it again.
-                # This allows us to see the effect of our move.
+                if players == 2:
+                    player = 1
+                    Game.player_move(1, hist)
+                    Game.draw_pieces(hist[-1].rotate())            
+                    pygame.display.update()
+                    pygame.event.poll()
+
+                    player = 2
+                    Game.player_move(2, hist)
+                    Game.check_checkmate(hist, player)
+
+                    # After our move we rotate the board and print it again.
+                    # This allows us to see the effect of our move.
                 pygame.event.poll()
                 # print_pos(hist[-1].rotate())
                 Game.draw_pieces(hist[-1].rotate())            
-                pygame.display.update()
-
-                if hist[-1].score <= -sunfish.MATE_LOWER:
-                    print("You won")
-                    break
-
-                # Fire up the engine to look for a move.
-                start = time.time()
-                for _depth, move, score in searcher.search(hist[-1], hist):
-                    if time.time() - start > 1:
-                        break
-
-                if score == sunfish.MATE_UPPER:
-                    print("Checkmate!")
-
-                # The black player moves from a rotated position, so we have to
-                # 'back rotate' the move before printing it.
-                
-                print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
-                hist.append(hist[-1].move(move))
+                pygame.display.update()           
         pygame.quit()
 
 
 if __name__ == '__main__':
-    Game.main()
+    Menu.draw_menu()

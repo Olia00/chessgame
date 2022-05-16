@@ -382,13 +382,26 @@ if sys.version_info[0] == 2:
     input = raw_input
 
 
-def parse(c):
+def parse1(c):
     fil, rank = ord(c[0]) - ord('a'), int(c[1]) - 1
+    print(fil, rank)
+    print(A1 + fil - 10*rank)
     return A1 + fil - 10*rank
+
+def parse2(c):
+    fil, rank = ord(c[0]) - ord('a'), -(int(c[1]) - 1)
+    print(fil, rank)
+    # fil, rank = ord('h') - ord(c[0]), 1 - int(c[1])
+    # print(A1)
+    # print
+    print(A1 + fil + 10*rank)
+    return A1 + fil + 10*rank
 
 
 def render(i):
     rank, fil = divmod(i - A1, 10)
+    print(fil, rank)
+    print(chr(fil + ord('a')) + str(-rank + 1))
     return chr(fil + ord('a')) + str(-rank + 1)
 
 

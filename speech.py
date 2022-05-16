@@ -1,6 +1,7 @@
 import speech_recognition as sr
+import pygame
 
-# import game
+import game
 
 r = sr.Recognizer()
 r.dynamic_energy_threshold = False
@@ -24,27 +25,25 @@ def checkChar(txt):
     else:
         return 2
 
-def get_pos_1():
+def get_pos(number):
     while True:
         with sr.Microphone() as source:
             try:
-                print("Podaj pozycję początkową")
+                if number == 1:
+                    print("Podaj pozycję początkową: ")
+                elif number == 2:
+                    print("Podaj pozycję docelową: ")
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
                         # game.Game.select_field(text.lower())                    
-                        print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
-                        audio = r.listen(source, timeout=5)
-                        confirm = r.recognize_google(audio, language='pl-PL') 
-                        print(confirm)
-                        if(confirm == 'Tak') or (confirm == 'TAK') or (confirm == 'tak'):
+                        # if confirm(text) == 0:
                             # game.Game.reset_board()
                             return str(text).lower()
-                        elif(confirm == 'Nie') or (confirm == 'NIE') or (confirm == 'nie'): 
-                            print("Odrzucono wybraną pozycję")
-                            get_pos_1()
+                        # elif confirm(text) == 1:
+                            # get_pos(number)
                     elif check_val == 1:
                         print("Nie ma takiego pola!")
                         #if game.event.get(game.keyboard.push):
@@ -55,38 +54,31 @@ def get_pos_1():
             except:
                 print("Nie udało się wprowadzić polecenia")
                 continue
-        
 
-def get_pos_2():
+def confirm(text):
     while True:
         with sr.Microphone() as source:
             try:
-                print("Podaj pozycję docelową")
+                game.Game.select_field(text.lower())
+                print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
-                    check_val = checkChar(text)
-                    if check_val == 0:
-                        print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
-                        audio = r.listen(source, timeout=5)
-                        confirm = r.recognize_google(audio, language='pl-PL') 
-                        print(confirm)
-                        if(confirm == 'Tak') or (confirm == 'TAK') or (confirm == 'tak'):
-                            return str(text).lower()
-                        if(confirm == 'Nie') or (confirm == 'NIE') or (confirm == 'nie'): 
-                            print("Odrzucono wybraną pozycję")
-                            get_pos_2()
-                    elif check_val == 1:
-                        print("Nie ma takiego pola!")
-                        #if game.event.get(game.keyboard.push):
-                           #return(print("Wpisz pozycje na klawiaturze"))
-                    elif check_val == 2:
-                        print("Źle wprowadzona komenda - za długa!")
-                continue
+                    if len(text) == 3:
+                        if text == "tak" or text == "Tak" or text == "TAK":
+                            return 0
+                        elif text == "nie" or text == "Nie" or text == "NIE":
+                            return 1
             except:
-                print("Nie udało się wprowadzić polecenia")
-                continue
+                print("Nie udało się wprowadzić potwierdzenia")
+                return 2
+
+# events = pygame.event.get()
+# for event in events:
+#     if event.type == pygame.QUIT:
+#         exit()
+#     # if event.type == pygame.KEYDOWN
 
 if __name__ == "__main__":
-    get_pos_1()
-    get_pos_2()
+    get_pos(1)
+    get_pos(2)
