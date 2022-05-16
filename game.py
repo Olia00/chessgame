@@ -230,8 +230,11 @@ class Game:
             if match:
                 if player == 1:
                     move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
+                    print(f"move: {move}")
+
                 elif player == 2:
                     move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
+                    print(f'move: {move}')
                 # Game.reset_board()
             else:
                 #Inform the user when invalid input (e.g. "help") is entered
@@ -251,6 +254,10 @@ class Game:
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
         print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
+        print(f'move: {move}')
+        print(f'move[0]: {move[0]}')
+        print(f'move[1]: {move[1]}')
+
         hist.append(hist[-1].move(move))
 
     def check_checkmate(hist, player):
