@@ -155,7 +155,7 @@ class Game:
 
 
     def display_text(text):
-        box = pygame.Rect(10 * empty_field.get_width(), 0, 4 * empty_field.get_width(), 2 * empty_field.get_width())
+        box = pygame.Rect(10 * empty_field.get_width() + 1, 1, 4 * empty_field.get_width(), 2 * empty_field.get_width())
         # box = pygame.Rect(10 * empty_field.get_width(), 100, 140, 32)
         font = pygame.font.Font(None, 32)
         board_color = (121, 103, 92)
@@ -284,7 +284,8 @@ class Game:
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
         print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
-        Game.display_text("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
+        text = sunfish.render(119-move[0]) + sunfish.render(119-move[1])    
+        Game.display_text(f"My move: {text}")
 
         hist.append(hist[-1].move(move))
 
