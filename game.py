@@ -153,11 +153,19 @@ class Game:
                 'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'        # 90-99
                 ]
 
-    box = pygame.Rect(10 * empty_field.get_width(), 0, 4 * empty_field.get_width(), 2 * empty_field.get_width())
-    # box = pygame.Rect(10 * empty_field.get_width(), 100, 140, 32)
-    font = pygame.font.Font(None, 32)
-    board_color = (121, 103, 92)
-    color = (255, 255, 255)
+
+    def display_text(text):
+        box = pygame.Rect(10 * empty_field.get_width(), 0, 4 * empty_field.get_width(), 2 * empty_field.get_width())
+        # box = pygame.Rect(10 * empty_field.get_width(), 100, 140, 32)
+        font = pygame.font.Font(None, 32)
+        board_color = (121, 103, 92)
+        color = (255, 255, 255)
+        # text = "TEST"
+        text_surface = font.render(text, True, color)
+        # box.w
+        # pygame.draw.rect(WIN, color=Game.color, )
+        pygame.draw.rect(WIN, board_color, box, 0)
+        WIN.blit(text_surface, (10 * width + 5, 5))
     
 
     def draw_board():     
@@ -240,13 +248,7 @@ class Game:
         # We query the user until she enters a (pseudo) legal move.
         move = None
         print(f'Player {player} move')
-        text = f'Player{player} move'
-        # text = "TEST"
-        text_surface = Game.font.render(text, True, Game.color)
-        # box.w
-        # pygame.draw.rect(WIN, color=Game.color, )
-        pygame.draw.rect(WIN, Game.board_color, Game.box, 0)
-        WIN.blit(text_surface, (10 * width + 5, 5))
+        Game.display_text(f'Player {player} move')
         
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
@@ -261,12 +263,14 @@ class Game:
             else:
                 #Inform the user when invalid input (e.g. "help") is entered
                 print("Please enter a move like g8f6")
+                Game.display_text("Please enter a move like g8f6")
         hist.append(hist[-1].move(move))
 
     def engine_move(searcher, hist):
         text = "sunfish move"
         
         print("Sunfish move: \n")
+        Game.display_text("Sunfish move: \n")
         # Fire up the engine to look for a move.
         start = time.time()
         for _depth, move, score in searcher.search(hist[-1], hist):
@@ -275,15 +279,18 @@ class Game:
 
         if score == sunfish.MATE_UPPER:
             print("Checkmate!")
+            Game.display_text("Checkmate!")
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
         print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
+        Game.display_text("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
 
         hist.append(hist[-1].move(move))
 
     def check_checkmate(hist, player):
         if hist[-1].score <= -sunfish.MATE_LOWER:
             print(f"Player{player} won")
+            Game.display_text(f"Player{player} won")
 
 
     def main(players):
@@ -308,6 +315,7 @@ class Game:
                 pygame.event.poll()
                 if hist[-1].score <= -sunfish.MATE_LOWER:
                     print("You lost")
+                    Game.display_text("You lost")
                     break
                 
                 if players == 1:
