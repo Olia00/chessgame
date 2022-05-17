@@ -38,10 +38,10 @@ def get_pos(number):
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
-                        # game.Game.select_field(text.lower())                    
+                        game.Game.select_field(text.lower())
                         # if confirm(text) == 0:
                             # game.Game.reset_board()
-                            return str(text).lower()
+                        return str(text).lower()
                         # elif confirm(text) == 1:
                             # get_pos(number)
                     elif check_val == 1:
@@ -59,7 +59,7 @@ def confirm(text):
     while True:
         with sr.Microphone() as source:
             try:
-                game.Game.select_field(text.lower())
+                #game.Game.select_field(text.lower())
                 print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
@@ -78,7 +78,6 @@ def confirm(text):
 #     if event.type == pygame.QUIT:
 #         exit()
 #     # if event.type == pygame.KEYDOWN
-
 if __name__ == "__main__":
     get_pos(1)
     get_pos(2)

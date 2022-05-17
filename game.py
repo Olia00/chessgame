@@ -11,7 +11,7 @@ from sunfish import compressed
 import speech
 
 width, height = pyautogui.size()
-scale = (height/10-10, height/10-10)
+scale = (int(height/10-10), int(height/10-10))
 white_king = pygame.image.load('Assets/Pieces/White_King.png')
 white_king = pygame.transform.scale(white_king, scale)
 black_king = pygame.image.load('Assets/Pieces/Black_King.png')
