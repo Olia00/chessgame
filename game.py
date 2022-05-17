@@ -105,10 +105,15 @@ field_H = pygame.image.load('Assets/Board/H.png')
 field_H = pygame.transform.scale(field_H, scale)
 
 BACK = (0, 0, 0)
-WIDTH, HEIGHT = 10 * empty_field.get_width(), 10 * empty_field.get_height()
+width, height = empty_field.get_width(), empty_field.get_height()
+WIDTH, HEIGHT = 14 * width, 10 * height
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
+LANG = 'PL'
+
+
+
 
 def get_win_params():
     return WIDTH, HEIGHT
@@ -120,8 +125,10 @@ class Menu:
 
     def start_game_single():
         Game.main(1)
+
     def start_game_multi():
-        Game.main(2)
+        Game.main(2)      
+
 
     def draw_menu():
         print('test')
@@ -129,6 +136,7 @@ class Menu:
                                 theme=pygame_menu.themes.THEME_BLUE)
         menu.add.button('SINGLEPLAYER', Menu.start_game_single)
         menu.add.button('MULTIPLAYER', Menu.start_game_multi)
+        # menu.add.selector('JĘZYK: ', [('Polski', 1), ('English', 2)], onchange=change_lang)
         menu.add.button('WYJDŹ', pygame_menu.events.EXIT)
         menu.mainloop(WIN)
 
@@ -144,6 +152,13 @@ class Game:
                 '1',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '1',        # 80-89
                 'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'        # 90-99
                 ]
+
+    box = pygame.Rect(10 * empty_field.get_width(), 0, 4 * empty_field.get_width(), 2 * empty_field.get_width())
+    # box = pygame.Rect(10 * empty_field.get_width(), 100, 140, 32)
+    font = pygame.font.Font(None, 32)
+    board_color = (121, 103, 92)
+    color = (255, 255, 255)
+    
 
     def draw_board():     
         WIN.fill(BACK)
@@ -172,9 +187,9 @@ class Game:
             if i == 'w': field = white_field
             if i == 's': field = selected_field
             WIN.blit(field, (pos_x, pos_y))
-            pos_x += empty_field.get_height()
+            pos_x += height
             if row%10 == 0:
-                pos_y += empty_field.get_height()
+                pos_y += height
                 pos_x = 0
             row += 1
 
@@ -182,16 +197,16 @@ class Game:
         Game.draw_board()
         uni_pieces = {'R':white_rook, 'N':white_knight, 'B':white_bishop, 'Q':white_queen, 'K':white_king, 'P':white_pawn,
                     'r':black_rook, 'n':black_knight, 'b':black_bishop, 'q':black_queen, 'k':black_king, 'p':black_pawn, '.':empty_field}
-        pos_x = empty_field.get_height()
-        pos_y =empty_field.get_height()
+        pos_x = height
+        pos_y = height
         for i, row in enumerate(pos.board.split()):
             for p in row:
                 piece = uni_pieces.get(p, p)
-                piece.get_rect(center=(empty_field.get_width()/2, empty_field.get_height()/2))
+                piece.get_rect(center=(width/2, height/2))
                 WIN.blit(piece, (pos_x, pos_y))
-                pos_x += empty_field.get_height()
-            pos_x = empty_field.get_height()
-            pos_y += empty_field.get_height()
+                pos_x += height
+            pos_x = height
+            pos_y += height
 
     def select_field(position):
         if(position == "a1") or (position == "A1"):
@@ -224,17 +239,24 @@ class Game:
     def player_move(player, hist):
         # We query the user until she enters a (pseudo) legal move.
         move = None
-        print(f'Player{player} move')        
+        print(f'Player {player} move')
+        text = f'Player{player} move'
+        # text = "TEST"
+        text_surface = Game.font.render(text, True, Game.color)
+        # box.w
+        # pygame.draw.rect(WIN, color=Game.color, )
+        pygame.draw.rect(WIN, Game.board_color, Game.box, 0)
+        WIN.blit(text_surface, (10 * width + 5, 5))
+        
+        pygame.display.update()       
         while move not in hist[-1].gen_moves():
             match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1))+str(speech.get_pos(2))))
             if match:
                 if player == 1:
                     move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
-                    print(f"move: {move}")
 
                 elif player == 2:
                     move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
-                    print(f'move: {move}')
                 # Game.reset_board()
             else:
                 #Inform the user when invalid input (e.g. "help") is entered
@@ -242,6 +264,8 @@ class Game:
         hist.append(hist[-1].move(move))
 
     def engine_move(searcher, hist):
+        text = "sunfish move"
+        
         print("Sunfish move: \n")
         # Fire up the engine to look for a move.
         start = time.time()
@@ -254,9 +278,6 @@ class Game:
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
         print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
-        print(f'move: {move}')
-        print(f'move[0]: {move[0]}')
-        print(f'move[1]: {move[1]}')
 
         hist.append(hist[-1].move(move))
 

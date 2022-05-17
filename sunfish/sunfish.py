@@ -405,9 +405,3 @@ def print_pos(pos):
     for i, row in enumerate(pos.board.split()):
         print(' ', 8-i, ' '.join(uni_pieces.get(p, p) for p in row))
     print('    a b c d e f g h \n\n')
-
-# def chane_scale(asset, height):
-#     asset = pygame.transform.scale(asset, (50, 50))
-
-
-
