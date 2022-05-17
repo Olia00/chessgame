@@ -393,8 +393,6 @@ def parse2(c):
 
 def render(i):
     rank, fil = divmod(i - A1, 10)
-    print(fil, rank)
-    print(chr(fil + ord('a')) + str(-rank + 1))
     return chr(fil + ord('a')) + str(-rank + 1)
 
 

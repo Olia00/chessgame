@@ -6,7 +6,6 @@ import game
 r = sr.Recognizer()
 r.dynamic_energy_threshold = False
 
-
 ##Funkcja pobierajaca dzwiek i zamieniajaca go na tekst
 def checkChar(txt):
     field_name_letters = ("A", "a", "B", "b", "C", "c", "D", "d", "E", "e", "F", "f", "G", "g", "H", "h")
@@ -31,14 +30,18 @@ def get_pos(number):
             try:
                 if number == 1:
                     print("Podaj pozycję początkową: ")
+                    text = "Podaj pozycję początkową: "
+                    game.Game.display_text(text)
                 elif number == 2:
                     print("Podaj pozycję docelową: ")
+                    text = "Podaj pozycję doeclową"
+                    game.Game.display_text(text)
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
-                        game.Game.select_field(text.lower())
+                        # game.Game.select_field(text.lower())
                         # if confirm(text) == 0:
                             # game.Game.reset_board()
                         return str(text).lower()
@@ -46,13 +49,20 @@ def get_pos(number):
                             # get_pos(number)
                     elif check_val == 1:
                         print("Nie ma takiego pola!")
+                        text = "Nie ma takiego pola!"
+                        game.Game.display_text(text)
+
                         #if game.event.get(game.keyboard.push):
                            #return(print("Wpisz pozycje na klawiaturze"))
                     elif check_val == 2:
                         print("Źle wprowadzona komenda - za długa!")
+                        text = "Źle wprowadzona komenda - za długa!"
+                        game.Game.display_text(text)
                 continue
             except:
                 print("Nie udało się wprowadzić polecenia")
+                text = "Nie udało się wprowadzić polecenia"
+                game.Game.display_text(text)
                 continue
 
 def confirm(text):

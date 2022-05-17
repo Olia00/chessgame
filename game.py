@@ -166,6 +166,7 @@ class Game:
         # pygame.draw.rect(WIN, color=Game.color, )
         pygame.draw.rect(WIN, board_color, box, 0)
         WIN.blit(text_surface, (10 * width + 5, 5))
+        pygame.display.update()  
     
 
     def draw_board():     
@@ -248,7 +249,7 @@ class Game:
         # We query the user until she enters a (pseudo) legal move.
         move = None
         print(f'Player {player} move')
-        Game.display_text(f'Player {player} move')
+        # Game.display_text(f'Player {player} move')
         
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
