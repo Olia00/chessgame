@@ -25,7 +25,7 @@ def checkChar(txt):
         return 2
 
 def get_pos(number, player):
-    while True:
+    # while True:
         with sr.Microphone() as source:
             try:
                 if number == 1:
@@ -34,12 +34,12 @@ def get_pos(number, player):
                 elif number == 2:
                     text = f"Gracz {player} podaj pozycję docelową"
                     game.Game.display_text(text)
-                audio = r.listen(source, timeout=2)
+                audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
-                        game.Game.select_field(text.lower())
+                        # game.Game.select_field(text.lower())
                         # if confirm(text) == 0:
                             # game.Game.reset_board()
                         return str(text).lower()
@@ -54,11 +54,11 @@ def get_pos(number, player):
                     elif check_val == 2:
                         text = "Źle wprowadzona komenda - za długa!"
                         game.Game.display_text(text)
-                continue
+                # continue
             except:
                 text = "Nie udało się wprowadzić polecenia"
                 game.Game.display_text(text)
-                continue
+                # continue
 
 def confirm(text):
     while True:

@@ -245,15 +245,19 @@ class Game:
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1, player))+str(speech.get_pos(2, player))))
-                        if match:
+                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player))))
+                        if match1:
+                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player))))
+                        if match1 and match2:
                             if player == 1:
-                                move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
+                                move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
 
                             elif player == 2:
-                                move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
+                                move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
                 
                             # if speech.confirm(move) == 0:
                             #     hist.append(hist[-1].move(move))
@@ -297,9 +301,8 @@ class Game:
 
         while run:
             clock.tick(FPS)
-            events = pygame.event.get()
 
-            for event in events:
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
 
