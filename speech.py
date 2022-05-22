@@ -24,7 +24,7 @@ def checkChar(txt):
     else:
         return 2
 
-def get_pos(number, player):
+def get_pos(number, player, hist):
     # while True:
         with sr.Microphone() as source:
             try:
@@ -39,7 +39,7 @@ def get_pos(number, player):
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
-                        # game.Game.select_field(text.lower())
+                        game.Game.select_field(text.lower(), hist, player)
                         # if confirm(text) == 0:
                             # game.Game.reset_board()
                         return str(text).lower()
@@ -78,5 +78,6 @@ def confirm(text):
                 return 2
 
 if __name__ == "__main__":
-    get_pos(1, 1)
-    get_pos(2, 2)
+    confirm("dupa")
+    # get_pos(1, 1)
+    # get_pos(2, 2)

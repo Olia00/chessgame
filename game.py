@@ -162,12 +162,12 @@ class Game:
         pygame.display.update()  
     
 
-    def draw_board():     
+    def draw_board(board):     
         WIN.fill(BACK)
         pos_x = 0
         pos_y = 0
         row = 1
-        for i in Game.board:
+        for i in board:
             if i == 'FP': field = frame_field
             if i == 'A': field = field_A
             if i == 'B': field = field_B
@@ -196,7 +196,7 @@ class Game:
             row += 1
 
     def draw_pieces(pos):    
-        Game.draw_board()
+        Game.draw_board(Game.board)
         uni_pieces = {'R':white_rook, 'N':white_knight, 'B':white_bishop, 'Q':white_queen, 'K':white_king, 'P':white_pawn,
                     'r':black_rook, 'n':black_knight, 'b':black_bishop, 'q':black_queen, 'k':black_king, 'p':black_pawn, '.':empty_field}
         pos_x = height
@@ -210,16 +210,16 @@ class Game:
             pos_x = height
             pos_y += height
 
-    def select_field(position):
-        if(position == "a1") or (position == "A1"):
-            Game.board[81] = "s"
-        if(position == "a2") or (position == "A2"):
-            Game.board[82] = "s"
-
-
-        # print(Game.board)
-        Game.draw_board() 
-        Game.draw_pieces()     
+    def select_field(position, hist, player):
+        Game.reset_board()
+        field = sunfish.parse1(position)
+        Game.board[field - 10] = "s"
+        Game.draw_board(Game.board)
+        if player == 1:
+            Game.draw_pieces(hist[-1]) 
+        elif player == 2:
+            Game.draw_pieces(hist[-1].rotate())
+        print(Game.board)  
         pygame.display.update()
 
     def reset_board():
@@ -234,9 +234,6 @@ class Game:
                         '1',   'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', '1',        # 80-89
                         'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'        # 90-99
                     ]
-        Game.draw_board() 
-        Game.draw_pieces()     
-        pygame.display.update()
 
     def player_move(player, hist):
         # We query the user until she enters a (pseudo) legal move.
@@ -249,9 +246,9 @@ class Game:
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player))))
+                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist))))
                         if match1:
-                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player))))
+                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist))))
                         if match1 and match2:
                             if player == 1:
                                 move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
@@ -335,13 +332,13 @@ class Game:
 
                     player = 2
                     Game.player_move(2, hist)
-                    Game.check_checkmate(hist, player, run)
+                    Game.draw_pieces(hist[-1].rotate())
+                    Game.check_checkmate(hist, player, run)          
+                    pygame.display.update()
+                    pygame.event.poll()
 
                     # After our move we rotate the board and print it again.
-                    # This allows us to see the effect of our move.
-                pygame.event.poll()
-                Game.draw_pieces(hist[-1].rotate())            
-                pygame.display.update()           
+                    # This allows us to see the effect of our move.           
         pygame.quit()
 
 
