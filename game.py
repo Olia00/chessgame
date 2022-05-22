@@ -244,21 +244,24 @@ class Game:
 
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
-            match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1, player))+str(speech.get_pos(2, player))))
-            if match:
-                if player == 1:
-                    move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1, player))+str(speech.get_pos(2, player))))
+                        if match:
+                            if player == 1:
+                                move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
 
-                elif player == 2:
-                    move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
+                            elif player == 2:
+                                move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
                 
-                if speech.confirm(move) == 0:
-                    hist.append(hist[-1].move(move))
+                            # if speech.confirm(move) == 0:
+                            #     hist.append(hist[-1].move(move))
 
-            else:
-                #Inform the user when invalid input (e.g. "help") is entered
-                Game.display_text("Podaj poprawny ruch np. d2d4")
-
+                        else:
+                            #Inform the user when invalid input (e.g. "help") is entered
+                            Game.display_text("Podaj poprawny ruch np. d2d4")
+        hist.append(hist[-1].move(move))
 
     def engine_move(searcher, hist):
         text = "Ruch silnika"
