@@ -110,18 +110,12 @@ WIDTH, HEIGHT = 14 * width, 10 * height
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
-LANG = 'PL'
-
-
-
 
 def get_win_params():
     return WIDTH, HEIGHT
 
 class Menu:
     pygame.init()
-    # WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-
 
     def start_game_single():
         Game.main(1)
@@ -131,7 +125,6 @@ class Menu:
 
 
     def draw_menu():
-        print('test')
         menu = pygame_menu.Menu('Blindfold chess', WIDTH, HEIGHT, 
                                 theme=pygame_menu.themes.THEME_BLUE)
         menu.add.button('SINGLEPLAYER', Menu.start_game_single)
@@ -248,33 +241,28 @@ class Game:
     def player_move(player, hist):
         # We query the user until she enters a (pseudo) legal move.
         move = None
-        print(f'Player {player} move')
-        # Game.display_text(f'Player {player} move')
-        
+
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
-            for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
-                            match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1))+str(speech.get_pos(2))))
-                            if match:
-                                if player == 1:
-                                    move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
+            match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1, player))+str(speech.get_pos(2, player))))
+            if match:
+                if player == 1:
+                    move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
 
-                                elif player == 2:
-                                    move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
-                            # Game.reset_board()
-                            else:
-                                #Inform the user when invalid input (e.g. "help") is entered
-                                print("Please enter a move like g8f6")
-                                Game.display_text("Please enter a move like g8f6")
-        hist.append(hist[-1].move(move))
+                elif player == 2:
+                    move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
+                
+                if speech.confirm(move) == 0:
+                    hist.append(hist[-1].move(move))
+
+            else:
+                #Inform the user when invalid input (e.g. "help") is entered
+                Game.display_text("Podaj poprawny ruch np. d2d4")
+
 
     def engine_move(searcher, hist):
-        text = "sunfish move"
-        
-        print("Sunfish move: \n")
-        Game.display_text("Sunfish move: \n")
+        text = "Ruch silnika"
+        Game.display_text(text)
         # Fire up the engine to look for a move.
         start = time.time()
         for _depth, move, score in searcher.search(hist[-1], hist):
@@ -282,21 +270,20 @@ class Game:
                 break
 
         if score == sunfish.MATE_UPPER:
-            print("Checkmate!")
-            Game.display_text("Checkmate!")
+            Game.display_text("Szach-mat!")
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
-        print("My move:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
+        print("Mój ruch:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
         text = sunfish.render(119-move[0]) + sunfish.render(119-move[1])    
-        Game.display_text(f"My move: {text}")
+        Game.display_text(f"Mój ruch: {text}")
 
         hist.append(hist[-1].move(move))
 
-    def check_checkmate(hist, player):
+    def check_checkmate(hist, player, run):
         if hist[-1].score <= -sunfish.MATE_LOWER:
-            print(f"Player{player} won")
-            Game.display_text(f"Player{player} won")
-
+            Game.display_text(f"Gracz {player} wygrał")
+            time.sleep(5)
+            run = False
 
     def main(players):
         
@@ -307,6 +294,11 @@ class Game:
 
         while run:
             clock.tick(FPS)
+            events = pygame.event.get()
+
+            for event in events:
+                if event.type == pygame.QUIT:
+                    exit()
 
             while True:
                 for event in pygame.event.get():
@@ -317,9 +309,8 @@ class Game:
                 pygame.display.update()
                 pygame.event.poll()
                 if hist[-1].score <= -sunfish.MATE_LOWER:
-                    print("You lost")
-                    Game.display_text("You lost")
-                    break
+                    Game.display_text("Przegrałeś")
+                    run = False
                 
                 if players == 1:
                     Game.player_move(1, hist)
@@ -331,18 +322,18 @@ class Game:
                 if players == 2:
                     player = 1
                     Game.player_move(1, hist)
-                    Game.draw_pieces(hist[-1].rotate())            
+                    Game.draw_pieces(hist[-1].rotate())
+                    Game.check_checkmate(hist, player, run)          
                     pygame.display.update()
                     pygame.event.poll()
 
                     player = 2
                     Game.player_move(2, hist)
-                    Game.check_checkmate(hist, player)
+                    Game.check_checkmate(hist, player, run)
 
                     # After our move we rotate the board and print it again.
                     # This allows us to see the effect of our move.
                 pygame.event.poll()
-                # print_pos(hist[-1].rotate())
                 Game.draw_pieces(hist[-1].rotate())            
                 pygame.display.update()           
         pygame.quit()

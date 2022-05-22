@@ -24,43 +24,38 @@ def checkChar(txt):
     else:
         return 2
 
-def get_pos(number):
+def get_pos(number, player):
     while True:
         with sr.Microphone() as source:
             try:
                 if number == 1:
-                    print("Podaj pozycję początkową: ")
-                    text = "Podaj pozycję początkową: "
+                    text = f"Gracz {player} podaj pozycję początkową: "
                     game.Game.display_text(text)
                 elif number == 2:
-                    print("Podaj pozycję docelową: ")
-                    text = "Podaj pozycję doeclową"
+                    text = f"Gracz {player} podaj pozycję docelową"
                     game.Game.display_text(text)
                 audio = r.listen(source, timeout=2)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)
                     if check_val == 0:
-                        # game.Game.select_field(text.lower())
+                        game.Game.select_field(text.lower())
                         # if confirm(text) == 0:
                             # game.Game.reset_board()
                         return str(text).lower()
                         # elif confirm(text) == 1:
                             # get_pos(number)
                     elif check_val == 1:
-                        print("Nie ma takiego pola!")
                         text = "Nie ma takiego pola!"
                         game.Game.display_text(text)
 
                         #if game.event.get(game.keyboard.push):
                            #return(print("Wpisz pozycje na klawiaturze"))
                     elif check_val == 2:
-                        print("Źle wprowadzona komenda - za długa!")
                         text = "Źle wprowadzona komenda - za długa!"
                         game.Game.display_text(text)
                 continue
             except:
-                print("Nie udało się wprowadzić polecenia")
                 text = "Nie udało się wprowadzić polecenia"
                 game.Game.display_text(text)
                 continue
@@ -69,7 +64,6 @@ def confirm(text):
     while True:
         with sr.Microphone() as source:
             try:
-                #game.Game.select_field(text.lower())
                 print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
@@ -83,11 +77,6 @@ def confirm(text):
                 print("Nie udało się wprowadzić potwierdzenia")
                 return 2
 
-# events = pygame.event.get()
-# for event in events:
-#     if event.type == pygame.QUIT:
-#         exit()
-#     # if event.type == pygame.KEYDOWN
 if __name__ == "__main__":
-    get_pos(1)
-    get_pos(2)
+    get_pos(1, 1)
+    get_pos(2, 2)
