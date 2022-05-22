@@ -36,7 +36,7 @@ def get_pos(number):
                     print("Podaj pozycję docelową: ")
                     text = "Podaj pozycję doeclową"
                     game.Game.display_text(text)
-                audio = r.listen(source, timeout=5)
+                audio = r.listen(source, timeout=2)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     check_val = checkChar(text)

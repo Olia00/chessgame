@@ -253,18 +253,21 @@ class Game:
         
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
-            match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1))+str(speech.get_pos(2))))
-            if match:
-                if player == 1:
-                    move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
+            for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            match = re.match('([a-h][1-8])'*2, (str(speech.get_pos(1))+str(speech.get_pos(2))))
+                            if match:
+                                if player == 1:
+                                    move = sunfish.parse1(match.group(1)), sunfish.parse1(match.group(2))
 
-                elif player == 2:
-                    move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
-                # Game.reset_board()
-            else:
-                #Inform the user when invalid input (e.g. "help") is entered
-                print("Please enter a move like g8f6")
-                Game.display_text("Please enter a move like g8f6")
+                                elif player == 2:
+                                    move = sunfish.parse2(match.group(1)), sunfish.parse2(match.group(2))
+                            # Game.reset_board()
+                            else:
+                                #Inform the user when invalid input (e.g. "help") is entered
+                                print("Please enter a move like g8f6")
+                                Game.display_text("Please enter a move like g8f6")
         hist.append(hist[-1].move(move))
 
     def engine_move(searcher, hist):
@@ -304,14 +307,12 @@ class Game:
 
         while run:
             clock.tick(FPS)
-            events = pygame.event.get()
-
-            for event in events:
-                if event.type == pygame.QUIT:
-                    exit()
-                # if event.type == 
 
             while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit()
+                
                 Game.draw_pieces(hist[-1])            
                 pygame.display.update()
                 pygame.event.poll()
