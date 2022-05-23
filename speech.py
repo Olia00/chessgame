@@ -1,3 +1,4 @@
+from time import sleep
 import speech_recognition as sr
 import pygame
 
@@ -40,17 +41,11 @@ def get_pos(number, player, hist):
                     check_val = checkChar(text)
                     if check_val == 0:
                         game.Game.select_field(text.lower(), hist, player)
-                        # if confirm(text) == 0:
-                            # game.Game.reset_board()
                         return str(text).lower()
-                        # elif confirm(text) == 1:
-                            # get_pos(number)
                     elif check_val == 1:
                         text = "Nie ma takiego pola!"
                         game.Game.display_text(text)
 
-                        #if game.event.get(game.keyboard.push):
-                           #return(print("Wpisz pozycje na klawiaturze"))
                     elif check_val == 2:
                         text = "Źle wprowadzona komenda - za długa!"
                         game.Game.display_text(text)
@@ -60,24 +55,21 @@ def get_pos(number, player, hist):
                 game.Game.display_text(text)
                 # continue
 
-def confirm(text):
+def confirm(move):
     while True:
         with sr.Microphone() as source:
             try:
-                print("Czy potwierdzasz wprowadzaoną pozycję?: ", text)
+                game.Game.display_text(f"Czy potwierdzasz wprowadzoną pozycję: {move}?")
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
-                    if len(text) == 3:
-                        if text == "tak" or text == "Tak" or text == "TAK":
-                            return 0
-                        elif text == "nie" or text == "Nie" or text == "NIE":
-                            return 1
+                    if text == "tak" or text == "Tak" or text == "TAK":
+                        return 0
+                    elif text == "nie" or text == "Nie" or text == "NIE":
+                        return 1
             except:
-                print("Nie udało się wprowadzić potwierdzenia")
-                return 2
+                game.Game.display_text("Nie udało się wprowadzić potwierdzenia")
+                continue
 
 if __name__ == "__main__":
     confirm("dupa")
-    # get_pos(1, 1)
-    # get_pos(2, 2)

@@ -106,13 +106,10 @@ field_H = pygame.transform.scale(field_H, scale)
 
 BACK = (0, 0, 0)
 width, height = empty_field.get_width(), empty_field.get_height()
-WIDTH, HEIGHT = 14 * width, 10 * height
+WIDTH, HEIGHT = 16 * width, 10 * height
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blindfold Chess")
 FPS = 60
-
-def get_win_params():
-    return WIDTH, HEIGHT
 
 class Menu:
     pygame.init()
@@ -129,7 +126,6 @@ class Menu:
                                 theme=pygame_menu.themes.THEME_BLUE)
         menu.add.button('SINGLEPLAYER', Menu.start_game_single)
         menu.add.button('MULTIPLAYER', Menu.start_game_multi)
-        # menu.add.selector('JĘZYK: ', [('Polski', 1), ('English', 2)], onchange=change_lang)
         menu.add.button('WYJDŹ', pygame_menu.events.EXIT)
         menu.mainloop(WIN)
 
@@ -146,9 +142,8 @@ class Game:
                 'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'        # 90-99
                 ]
 
-
     def display_text(text):
-        box = pygame.Rect(10 * empty_field.get_width() + 1, 1, 4 * empty_field.get_width(), 2 * empty_field.get_width())
+        box = pygame.Rect(10 * empty_field.get_width() + 1, 1, 6 * empty_field.get_width(), 2 * empty_field.get_width())
         # box = pygame.Rect(10 * empty_field.get_width(), 100, 140, 32)
         font = pygame.font.Font(None, 32)
         board_color = (121, 103, 92)
@@ -211,7 +206,7 @@ class Game:
             pos_y += height
 
     def select_field(position, hist, player):
-        Game.reset_board()
+        # Game.reset_board()
         field = sunfish.parse1(position)
         Game.board[field - 10] = "s"
         Game.draw_board(Game.board)
@@ -219,7 +214,6 @@ class Game:
             Game.draw_pieces(hist[-1]) 
         elif player == 2:
             Game.draw_pieces(hist[-1].rotate())
-        print(Game.board)  
         pygame.display.update()
 
     def reset_board():
@@ -256,13 +250,16 @@ class Game:
                             elif player == 2:
                                 move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
                 
-                            # if speech.confirm(move) == 0:
-                            #     hist.append(hist[-1].move(move))
+                            if speech.confirm(str(match1.group(1)) + str(match2.group(1))) == 0:
+                                 hist.append(hist[-1].move(move))
+                            else:
+                                Game.display_text('Odrzucono ruch')
+                                Game.player_move(player, hist)
 
                         else:
                             #Inform the user when invalid input (e.g. "help") is entered
                             Game.display_text("Podaj poprawny ruch np. d2d4")
-        hist.append(hist[-1].move(move))
+        Game.reset_board()
 
     def engine_move(searcher, hist):
         text = "Ruch silnika"
