@@ -160,9 +160,7 @@ class Game:
         text = "HISTORIA"
         text_surface = font.render(text, True, color)
         pygame.draw.rect(WIN, board_color, box, 0)
-<<<<<<< HEAD
-        WIN.blit(text_surface, (10 * width + 5, width + 5))
-=======
+
         WIN.blit(text_surface, (12.4 * width + 5, width + 5))
         pygame.display.update()
 
@@ -184,28 +182,20 @@ class Game:
             WIN.blit(text_surface, (11 * width + 5, 1.7 * width + 5))
         if player == 2:
             WIN.blit(text_surface, (14 * width + 5, 1.7 * width + 5))
->>>>>>> 8c74402 (Prepare textbox for history)
         pygame.display.update()
 
     def display_history(hist):
         Game.display_history_field()
-<<<<<<< HEAD
-        box = pygame.Rect(10 * empty_field.get_width() + 1, 1.5 * empty_field.get_width() + 1, 6 * empty_field.get_width(), 8.5 * empty_field.get_width())
-=======
         Game.display_players_field(1)
         Game.display_players_field(2)
         box = pygame.Rect(10 * empty_field.get_width() + 1, 2 * empty_field.get_width() + 1, 6 * empty_field.get_width(), 8.5 * empty_field.get_width())
->>>>>>> 8c74402 (Prepare textbox for history)
         font = pygame.font.Font(None, 32)
         board_color = (121, 103, 92)
         color = (255, 255, 255)
         text_surface = font.render(hist, True, color)
         pygame.draw.rect(WIN, board_color, box, 0)
-<<<<<<< HEAD
-        WIN.blit(text_surface, (10 * width + 5, 1.5 * width + 5))
-=======
         WIN.blit(text_surface, (10 * width + 5, 2 * width + 5))
->>>>>>> 8c74402 (Prepare textbox for history)
+        WIN.blit(text_surface, (10 * width + 5, 2 * width + 5))
         pygame.display.update()
     
 
