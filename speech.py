@@ -32,9 +32,11 @@ def get_pos(number, player, hist):
                 if number == 1:
                     text = f"Gracz {player} podaj pozycję początkową: "
                     game.Game.display_text(text)
+                    game.Game.display_history("HISTORIA TO JEST")
                 elif number == 2:
                     text = f"Gracz {player} podaj pozycję docelową"
                     game.Game.display_text(text)
+                    game.Game.display_history("HISTORIA TO JEST")
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
@@ -45,14 +47,17 @@ def get_pos(number, player, hist):
                     elif check_val == 1:
                         text = "Nie ma takiego pola!"
                         game.Game.display_text(text)
+                        game.Game.display_history("HISTORIA TO JEST")
 
                     elif check_val == 2:
                         text = "Źle wprowadzona komenda - za długa!"
                         game.Game.display_text(text)
+                        game.Game.display_history("HISTORIA TO JEST")
                 # continue
             except:
                 text = "Nie udało się wprowadzić polecenia"
                 game.Game.display_text(text)
+                game.Game.display_history("HISTORIA TO JEST")
                 # continue
 
 def confirm(move):
@@ -60,6 +65,7 @@ def confirm(move):
         with sr.Microphone() as source:
             try:
                 game.Game.display_text(f"Czy potwierdzasz wprowadzoną pozycję: {move}?")
+                game.Game.display_history("HISTORIA TO JEST")
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
@@ -69,6 +75,7 @@ def confirm(move):
                         return 1
             except:
                 game.Game.display_text("Nie udało się wprowadzić potwierdzenia")
+                game.Game.display_history("HISTORIA TO JEST")
                 continue
 
 if __name__ == "__main__":

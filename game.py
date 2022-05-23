@@ -143,18 +143,36 @@ class Game:
                 ]
 
     def display_text(text):
-        box = pygame.Rect(10 * empty_field.get_width() + 1, 1, 6 * empty_field.get_width(), 2 * empty_field.get_width())
-        # box = pygame.Rect(10 * empty_field.get_width(), 100, 140, 32)
+        box = pygame.Rect(10 * empty_field.get_width() + 1, 1, 6 * empty_field.get_width(), 1 * empty_field.get_width() - 1)
         font = pygame.font.Font(None, 32)
         board_color = (121, 103, 92)
         color = (255, 255, 255)
-        # text = "TEST"
         text_surface = font.render(text, True, color)
-        # box.w
-        # pygame.draw.rect(WIN, color=Game.color, )
         pygame.draw.rect(WIN, board_color, box, 0)
         WIN.blit(text_surface, (10 * width + 5, 5))
-        pygame.display.update()  
+        pygame.display.update()
+
+    def display_history_field():
+        box = pygame.Rect(10 * empty_field.get_width() + 1, empty_field.get_width() + 1, 6 * empty_field.get_width(), 0.5 * empty_field.get_width() - 1)
+        font = pygame.font.Font(None, 32)
+        board_color = (121, 103, 92)
+        color = (255, 255, 255)
+        text = "HISTORIA"
+        text_surface = font.render(text, True, color)
+        pygame.draw.rect(WIN, board_color, box, 0)
+        WIN.blit(text_surface, (10 * width + 5, width + 5))
+        pygame.display.update()
+
+    def display_history(hist):
+        Game.display_history_field()
+        box = pygame.Rect(10 * empty_field.get_width() + 1, 1.5 * empty_field.get_width() + 1, 6 * empty_field.get_width(), 8.5 * empty_field.get_width())
+        font = pygame.font.Font(None, 32)
+        board_color = (121, 103, 92)
+        color = (255, 255, 255)
+        text_surface = font.render(hist, True, color)
+        pygame.draw.rect(WIN, board_color, box, 0)
+        WIN.blit(text_surface, (10 * width + 5, 1.5 * width + 5))
+        pygame.display.update()
     
 
     def draw_board(board):     
@@ -206,7 +224,7 @@ class Game:
             pos_y += height
 
     def select_field(position, hist, player):
-        # Game.reset_board()
+        Game.reset_board()
         field = sunfish.parse1(position)
         Game.board[field - 10] = "s"
         Game.draw_board(Game.board)
@@ -255,15 +273,17 @@ class Game:
                             else:
                                 Game.display_text('Odrzucono ruch')
                                 Game.player_move(player, hist)
+                                Game.display_history("HISTORIA TO JEST")
 
                         else:
                             #Inform the user when invalid input (e.g. "help") is entered
                             Game.display_text("Podaj poprawny ruch np. d2d4")
-        Game.reset_board()
+                            Game.display_history("HISTORIA TO JEST")
+        print(hist)
 
     def engine_move(searcher, hist):
-        text = "Ruch silnika"
-        Game.display_text(text)
+        Game.display_text("Ruch silnika")
+        Game.display_history("HISTORIA TO JEST")
         # Fire up the engine to look for a move.
         start = time.time()
         for _depth, move, score in searcher.search(hist[-1], hist):
@@ -272,17 +292,19 @@ class Game:
 
         if score == sunfish.MATE_UPPER:
             Game.display_text("Szach-mat!")
+            Game.display_history("HISTORIA TO JEST")
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
-        print("Mój ruch:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
+        # print("Mój ruch:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
         text = sunfish.render(119-move[0]) + sunfish.render(119-move[1])    
         Game.display_text(f"Mój ruch: {text}")
-
+        Game.display_history("HISTORIA TO JEST")
         hist.append(hist[-1].move(move))
 
     def check_checkmate(hist, player, run):
         if hist[-1].score <= -sunfish.MATE_LOWER:
             Game.display_text(f"Gracz {player} wygrał")
+            Game.display_history("HISTORIA TO JEST")
             time.sleep(5)
             run = False
 
@@ -292,6 +314,7 @@ class Game:
         run = True
         hist = [sunfish.Position(sunfish.initial, 0, (True,True), (True,True), 0, 0)]
         searcher = compressed.Searcher()
+        start_text = "Spacja aby rozpoczac"
 
         while run:
             clock.tick(FPS)
@@ -310,25 +333,33 @@ class Game:
                 pygame.event.poll()
                 if hist[-1].score <= -sunfish.MATE_LOWER:
                     Game.display_text("Przegrałeś")
+                    Game.display_history("HISTORIA TO JEST")
                     run = False
                 
                 if players == 1:
+                    Game.display_text(start_text)
+                    Game.display_history("HISTORIA TO JEST")
                     Game.player_move(1, hist)
                     Game.draw_pieces(hist[-1].rotate())            
                     pygame.display.update()
                     pygame.event.poll()
+                    Game.display_history("HISTORIA TO JEST")
                     Game.engine_move(searcher, hist)
 
                 if players == 2:
                     player = 1
-                    Game.player_move(1, hist)
+                    Game.display_text(start_text)
+                    Game.display_history("hist")
+                    Game.player_move(player, hist)
                     Game.draw_pieces(hist[-1].rotate())
                     Game.check_checkmate(hist, player, run)          
                     pygame.display.update()
                     pygame.event.poll()
 
                     player = 2
-                    Game.player_move(2, hist)
+                    Game.display_text(start_text)
+                    Game.display_history("HISTORIA TO JEST")
+                    Game.player_move(player, hist)
                     Game.draw_pieces(hist[-1].rotate())
                     Game.check_checkmate(hist, player, run)          
                     pygame.display.update()
