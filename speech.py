@@ -25,7 +25,7 @@ def checkChar(txt):
     else:
         return 2
 
-def get_pos(number, player, hist, hist_moves):
+def get_pos(number, player, hist, hist_moves, move):
     # while True:
         with sr.Microphone() as source:
             try:
@@ -34,7 +34,7 @@ def get_pos(number, player, hist, hist_moves):
                     game.Game.display_text(text)
                     game.Game.display_history(hist_moves)
                 elif number == 2:
-                    text = f"Gracz {player} podaj pozycję docelową"
+                    text = f"Gracz {player} podaj pozycję docelową: {move}"
                     game.Game.display_text(text)
                     game.Game.display_history(hist_moves)
                 audio = r.listen(source, timeout=5)

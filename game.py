@@ -293,10 +293,11 @@ class Game:
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves))))
-                        # print(str(match1.group(1)))
+                        move0 = ""
+                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves, move0))))
+                        move1 = (str(match1.group(1)))
                         if match1:
-                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves))))
+                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves, move1))))
                         if match1 and match2:
                             if player == 1:
                                 move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
