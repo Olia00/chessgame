@@ -265,7 +265,7 @@ class Game:
         Game.board[field - 10] = "s"
         Game.draw_board(Game.board)
         if player == 1:
-            Game.draw_pieces(hist[-1].rotate()) 
+            Game.draw_pieces(hist[-1]) 
         elif player == 2:
             Game.draw_pieces(hist[-1].rotate())
         pygame.display.update()
@@ -286,7 +286,6 @@ class Game:
     def player_move(player, hist, hist_moves):
         # We query the user until she enters a (pseudo) legal move.
         move = None
-
         pygame.display.update()       
         while move not in hist[-1].gen_moves():
             for event in pygame.event.get():
@@ -294,34 +293,35 @@ class Game:
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        while move not in hist[-1].gen_moves():
-                            match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves))))
-                            if match1:
-                                match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves))))
-                            if match1 and match2:
-                                if player == 1:
-                                    move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
-                                    hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
-                                    hist.append(hist[-1].move(move))
+                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves))))
+                        if match1:
+                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves))))
+                        if match1 and match2:
+                            if player == 1:
+                                move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
 
-                                elif player == 2:
-                                    move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
-                                    hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
-                                    hist.append(hist[-1].move(move))
-                                # if speech.confirm(str(match1.group(1)) + str(match2.group(1)), hist_moves) == 0:
-                                #     hist.append(hist[-1].move(move))
-                                #     hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
-                                #     return 0
-                                # else:
-                                #     move1 = None
-                                #     Game.display_text('Odrzucono ruch')
-                                #     Game.player_move(player, hist, hist_moves)
-                                #     Game.display_history(hist_moves)
-
+                            elif player == 2:
+                                move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
+                                
+                            if speech.confirm(str(match1.group(1)) + str(match2.group(1)), hist_moves) == 0:
+                                pass
                             else:
-                                #Inform the user when invalid input (e.g. "help") is entered
-                                Game.display_text("Podaj poprawny ruch np. d2d4")
-                                Game.display_history(hist_moves)
+                                Game.display_text('Odrzucono ruch')
+                                Game.reset_board()
+                                pygame.display.update()
+                                match1 = NULL
+                                match2 = NULL
+                                move = NULL
+                                continue
+                        else:
+                            #Inform the user when invalid input (e.g. "help") is entered
+                            Game.display_text("Podaj poprawny ruch np. d2d4")
+                            Game.display_history(hist_moves)
+        hist.append(hist[-1].move(move))
+        hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
+        # hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
+        # hist.append(hist[-1].move(move))
+            # continue
 
     def engine_move(searcher, hist, hist_moves):
         Game.display_text("Ruch silnika")

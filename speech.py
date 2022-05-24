@@ -48,16 +48,19 @@ def get_pos(number, player, hist, hist_moves):
                         text = "Nie ma takiego pola!"
                         game.Game.display_text(text)
                         game.Game.display_history(hist_moves)
+                        sleep(1)
 
                     elif check_val == 2:
                         text = "Źle wprowadzona komenda - za długa!"
                         game.Game.display_text(text)
                         game.Game.display_history(hist_moves)
+                        sleep(1)
                 # continue
             except:
                 text = "Nie udało się wprowadzić polecenia"
                 game.Game.display_text(text)
                 game.Game.display_history(hist_moves)
+                sleep(1)
                 # continue
 
 def confirm(move, hist_moves):
@@ -66,7 +69,7 @@ def confirm(move, hist_moves):
             try:
                 game.Game.display_text(f"Czy potwierdzasz wprowadzoną pozycję: {move}?")
                 game.Game.display_history(hist_moves)
-                audio = r.listen(source, timeout=5)
+                audio = r.listen(source, timeout=3)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
                     print(text)
