@@ -1,3 +1,4 @@
+from math import ceil
 from tabnanny import check
 from turtle import position
 import pygame
@@ -193,11 +194,18 @@ class Game:
         font = pygame.font.Font(None, 32)
         board_color = (121, 103, 92)
         color = (255, 255, 255)
-        text_surface = font.render(hist, True, color)
         pygame.draw.rect(WIN, board_color, box1, 0)
         pygame.draw.rect(WIN, board_color, box2, 0)
-        WIN.blit(text_surface, (10 * width + 5, 2 * width + 5))
-        WIN.blit(text_surface, (10 * width + 5, 2 * width + 5))
+        for count, move in enumerate(hist):
+            
+            if count%2 ==0:
+                text_surface = font.render(str(ceil((count+1)/2))+': '+move, True, color)
+                WIN.blit(text_surface, (10 * width + 5, 2 * width + 5 + count * width * 0.15))
+            else:
+                text_surface = font.render(str(int((count+1)/2))+': '+move, True, color)
+                WIN.blit(text_surface, (13 * width + 5, 2 * width + 5 + count * width * 0.15 - width * 0.15))
+
+
         pygame.display.update()
     
     
@@ -285,9 +293,10 @@ class Game:
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist))))
+                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves))))
+                        # print(str(match1.group(1)))
                         if match1:
-                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist))))
+                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves))))
                         if match1 and match2:
                             if player == 1:
                                 move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
@@ -295,23 +304,22 @@ class Game:
                             elif player == 2:
                                 move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
                 
-                            if speech.confirm(str(match1.group(1)) + str(match2.group(1))) == 0:
+                            if speech.confirm(str(match1.group(1)) + str(match2.group(1)), hist_moves) == 0:
                                  hist.append(hist[-1].move(move))
                                  hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
                             else:
                                 Game.display_text('Odrzucono ruch')
                                 Game.player_move(player, hist, hist_moves)
-                                Game.display_history("HISTORIA TO JEST")
+                                Game.display_history(hist_moves)
 
                         else:
                             #Inform the user when invalid input (e.g. "help") is entered
                             Game.display_text("Podaj poprawny ruch np. d2d4")
-                            Game.display_history("HISTORIA TO JEST")
-        print(hist)
+                            Game.display_history(hist_moves)
 
     def engine_move(searcher, hist, hist_moves):
         Game.display_text("Ruch silnika")
-        Game.display_history("HISTORIA TO JEST")
+        Game.display_history(hist_moves)
         # Fire up the engine to look for a move.
         start = time.time()
         for _depth, move, score in searcher.search(hist[-1], hist):
@@ -320,20 +328,20 @@ class Game:
 
         if score == sunfish.MATE_UPPER:
             Game.display_text("Szach-mat!")
-            Game.display_history("HISTORIA TO JEST")
+            Game.display_history(hist_moves)
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.        
         # print("Mój ruch:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
         text = sunfish.render(119-move[0]) + sunfish.render(119-move[1])    
         hist_moves.append(text.upper())
         Game.display_text(f"Mój ruch: {text}")
-        Game.display_history("HISTORIA TO JEST")
+        Game.display_history(hist_moves)
         hist.append(hist[-1].move(move))
 
     def check_checkmate(hist, player, run):
         if hist[-1].score <= -sunfish.MATE_LOWER:
             Game.display_text(f"Gracz {player} wygrał")
-            Game.display_history("HISTORIA TO JEST")
+            Game.display_history(hist_moves)
             time.sleep(5)
             run = False
 
@@ -363,17 +371,17 @@ class Game:
                 pygame.event.poll()
                 if hist[-1].score <= -sunfish.MATE_LOWER:
                     Game.display_text("Przegrałeś")
-                    Game.display_history("HISTORIA TO JEST")
+                    Game.display_history(hist_moves)
                     run = False
                 
                 if players == 1:
                     Game.display_text(start_text)
-                    Game.display_history("HISTORIA TO JEST")
+                    Game.display_history(hist_moves)
                     Game.player_move(1, hist, hist_moves)
                     Game.draw_pieces(hist[-1].rotate())            
                     pygame.display.update()
                     pygame.event.poll()
-                    Game.display_history("HISTORIA TO JEST")
+                    Game.display_history(hist_moves)
                     Game.engine_move(searcher, hist, hist_moves)
 
                 if players == 2:
@@ -388,7 +396,7 @@ class Game:
 
                     player = 2
                     Game.display_text(start_text)
-                    Game.display_history("HISTORIA TO JEST")
+                    Game.display_history(hist_moves)
                     Game.player_move(player, hist, hist_moves)
                     Game.draw_pieces(hist[-1].rotate())
                     Game.check_checkmate(hist, player, run)          
