@@ -271,7 +271,7 @@ class Game:
                         'FP',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FP'        # 90-99
                     ]
 
-    def player_move(player, hist):
+    def player_move(player, hist, hist_moves):
         # We query the user until she enters a (pseudo) legal move.
         move = None
 
@@ -294,9 +294,10 @@ class Game:
                 
                             if speech.confirm(str(match1.group(1)) + str(match2.group(1))) == 0:
                                  hist.append(hist[-1].move(move))
+                                 hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
                             else:
                                 Game.display_text('Odrzucono ruch')
-                                Game.player_move(player, hist)
+                                Game.player_move(player, hist, hist_moves)
                                 Game.display_history("HISTORIA TO JEST")
 
                         else:
@@ -305,7 +306,7 @@ class Game:
                             Game.display_history("HISTORIA TO JEST")
         print(hist)
 
-    def engine_move(searcher, hist):
+    def engine_move(searcher, hist, hist_moves):
         Game.display_text("Ruch silnika")
         Game.display_history("HISTORIA TO JEST")
         # Fire up the engine to look for a move.
@@ -321,6 +322,7 @@ class Game:
         # 'back rotate' the move before printing it.        
         # print("Mój ruch:", sunfish.render(119-move[0]) + sunfish.render(119-move[1]))
         text = sunfish.render(119-move[0]) + sunfish.render(119-move[1])    
+        hist_moves.append(text.upper())
         Game.display_text(f"Mój ruch: {text}")
         Game.display_history("HISTORIA TO JEST")
         hist.append(hist[-1].move(move))
@@ -339,6 +341,7 @@ class Game:
         hist = [sunfish.Position(sunfish.initial, 0, (True,True), (True,True), 0, 0)]
         searcher = compressed.Searcher()
         start_text = "Spacja aby rozpoczac"
+        hist_moves = []
 
         while run:
             clock.tick(FPS)
@@ -363,18 +366,18 @@ class Game:
                 if players == 1:
                     Game.display_text(start_text)
                     Game.display_history("HISTORIA TO JEST")
-                    Game.player_move(1, hist)
+                    Game.player_move(1, hist, hist_moves)
                     Game.draw_pieces(hist[-1].rotate())            
                     pygame.display.update()
                     pygame.event.poll()
                     Game.display_history("HISTORIA TO JEST")
-                    Game.engine_move(searcher, hist)
+                    Game.engine_move(searcher, hist, hist_moves)
 
                 if players == 2:
                     player = 1
                     Game.display_text(start_text)
                     Game.display_history("hist")
-                    Game.player_move(player, hist)
+                    Game.player_move(player, hist, hist_moves)
                     Game.draw_pieces(hist[-1].rotate())
                     Game.check_checkmate(hist, player, run)          
                     pygame.display.update()
@@ -383,7 +386,7 @@ class Game:
                     player = 2
                     Game.display_text(start_text)
                     Game.display_history("HISTORIA TO JEST")
-                    Game.player_move(player, hist)
+                    Game.player_move(player, hist, hist_moves)
                     Game.draw_pieces(hist[-1].rotate())
                     Game.check_checkmate(hist, player, run)          
                     pygame.display.update()
