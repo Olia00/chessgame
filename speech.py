@@ -25,7 +25,7 @@ def checkChar(txt):
     else:
         return 2
 
-def get_pos(number, player, hist, hist_moves, move):
+def get_pos(number, player, hist, hist_moves):
     # while True:
         with sr.Microphone() as source:
             try:
@@ -34,7 +34,7 @@ def get_pos(number, player, hist, hist_moves, move):
                     game.Game.display_text(text)
                     game.Game.display_history(hist_moves)
                 elif number == 2:
-                    text = f"Gracz {player} podaj pozycję docelową: {move}"
+                    text = f"Gracz {player} podaj pozycję docelową: "
                     game.Game.display_text(text)
                     game.Game.display_history(hist_moves)
                 audio = r.listen(source, timeout=5)
@@ -69,6 +69,7 @@ def confirm(move, hist_moves):
                 audio = r.listen(source, timeout=5)
                 text = r.recognize_google(audio, language='pl-PL')
                 if text != "":
+                    print(text)
                     if text == "tak" or text == "Tak" or text == "TAK":
                         return 0
                     elif text == "nie" or text == "Nie" or text == "NIE":
@@ -76,7 +77,7 @@ def confirm(move, hist_moves):
             except:
                 game.Game.display_text("Nie udało się wprowadzić potwierdzenia")
                 game.Game.display_history(hist_moves)
-                continue
+                # continue
 
 if __name__ == "__main__":
     confirm("dupa")

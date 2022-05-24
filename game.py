@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from math import ceil
 from tabnanny import check
 from turtle import position
@@ -264,7 +265,7 @@ class Game:
         Game.board[field - 10] = "s"
         Game.draw_board(Game.board)
         if player == 1:
-            Game.draw_pieces(hist[-1]) 
+            Game.draw_pieces(hist[-1].rotate()) 
         elif player == 2:
             Game.draw_pieces(hist[-1].rotate())
         pygame.display.update()
@@ -293,30 +294,34 @@ class Game:
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        move0 = ""
-                        match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves, move0))))
-                        move1 = (str(match1.group(1)))
-                        if match1:
-                            match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves, move1))))
-                        if match1 and match2:
-                            if player == 1:
-                                move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
+                        while move not in hist[-1].gen_moves():
+                            match1 = re.match('([a-h][1-8])', (str(speech.get_pos(1, player, hist, hist_moves))))
+                            if match1:
+                                match2 = re.match('([a-h][1-8])', (str(speech.get_pos(2, player, hist, hist_moves))))
+                            if match1 and match2:
+                                if player == 1:
+                                    move = sunfish.parse1(match1.group(1)), sunfish.parse1(match2.group(1))
+                                    hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
+                                    hist.append(hist[-1].move(move))
 
-                            elif player == 2:
-                                move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
-                
-                            if speech.confirm(str(match1.group(1)) + str(match2.group(1)), hist_moves) == 0:
-                                 hist.append(hist[-1].move(move))
-                                 hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
+                                elif player == 2:
+                                    move = sunfish.parse2(match1.group(1)), sunfish.parse2(match2.group(1))
+                                    hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
+                                    hist.append(hist[-1].move(move))
+                                # if speech.confirm(str(match1.group(1)) + str(match2.group(1)), hist_moves) == 0:
+                                #     hist.append(hist[-1].move(move))
+                                #     hist_moves.append((str(match1.group(1))+str(match2.group(1))).upper())
+                                #     return 0
+                                # else:
+                                #     move1 = None
+                                #     Game.display_text('Odrzucono ruch')
+                                #     Game.player_move(player, hist, hist_moves)
+                                #     Game.display_history(hist_moves)
+
                             else:
-                                Game.display_text('Odrzucono ruch')
-                                Game.player_move(player, hist, hist_moves)
+                                #Inform the user when invalid input (e.g. "help") is entered
+                                Game.display_text("Podaj poprawny ruch np. d2d4")
                                 Game.display_history(hist_moves)
-
-                        else:
-                            #Inform the user when invalid input (e.g. "help") is entered
-                            Game.display_text("Podaj poprawny ruch np. d2d4")
-                            Game.display_history(hist_moves)
 
     def engine_move(searcher, hist, hist_moves):
         Game.display_text("Ruch silnika")
@@ -388,7 +393,7 @@ class Game:
                 if players == 2:
                     player = 1
                     Game.display_text(start_text)
-                    Game.display_history("hist")
+                    Game.display_history(hist_moves)
                     Game.player_move(player, hist, hist_moves)
                     Game.draw_pieces(hist[-1].rotate())
                     Game.check_checkmate(hist, player, run)          
