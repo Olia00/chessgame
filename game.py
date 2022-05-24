@@ -149,7 +149,7 @@ class Game:
         color = (255, 255, 255)
         text_surface = font.render(text, True, color)
         pygame.draw.rect(WIN, board_color, box, 0)
-        WIN.blit(text_surface, (10 * width + 5, 5))
+        WIN.blit(text_surface, (10 * width + 5, 0.4 * width))
         pygame.display.update()
 
     def display_history_field():
@@ -188,15 +188,18 @@ class Game:
         Game.display_history_field()
         Game.display_players_field(1)
         Game.display_players_field(2)
-        box = pygame.Rect(10 * empty_field.get_width() + 1, 2 * empty_field.get_width() + 1, 6 * empty_field.get_width(), 8.5 * empty_field.get_width())
+        box1 = pygame.Rect(10 * empty_field.get_width() + 1, 2 * empty_field.get_width() + 1, 3 * empty_field.get_width() - 1, 8.5 * empty_field.get_width())
+        box2 = pygame.Rect(13 * empty_field.get_width() + 1, 2 * empty_field.get_width() + 1, 3 * empty_field.get_width() - 1, 8.5 * empty_field.get_width())
         font = pygame.font.Font(None, 32)
         board_color = (121, 103, 92)
         color = (255, 255, 255)
         text_surface = font.render(hist, True, color)
-        pygame.draw.rect(WIN, board_color, box, 0)
+        pygame.draw.rect(WIN, board_color, box1, 0)
+        pygame.draw.rect(WIN, board_color, box2, 0)
         WIN.blit(text_surface, (10 * width + 5, 2 * width + 5))
         WIN.blit(text_surface, (10 * width + 5, 2 * width + 5))
         pygame.display.update()
+    
     
 
     def draw_board(board):     
